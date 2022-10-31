@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itcase.automall.dao.inter.IOrdersDao">
+
+    <!-- 基本sql字段 -->
+    <sql id="baseColumn">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="orderNumber != null">
+                order_number,
+            </if>
+            <if test="tradingHour != null">
+                trading_hour,
+            </if>
+            <if test="money != null">
+                money,
+            </if>
+            <if test="state != null">
+                state,
+            </if>
+            <if test="detailOrderId != null">
+                detail_order_id,
+            </if>
+            <if test="addressOrderId != null">
+                address_order_id,
+            </if>
+        </trim>
+    </sql>
+
+    <!-- 基本值sql -->
+    <sql id="baseValue">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="orderNumber != null">
+                #{orderNumber},
+            </if>
+            <if test="tradingHour != null">
+                #{tradingHour},
+            </if>
+            <if test="money != null">
+                #{money},
+            </if>
+            <if test="state != null">
+                #{state},
+            </if>
+            <if test="detailOrderId != null">
+                #{detailOrderId},
+            </if>
+            <if test="addressOrderId != null">
+                #{addressOrderId},
+            </if>
+        </trim>
+    </sql>
+
+    <!-- 修改信息sql -->
+    <sql id="editSql">
+        <trim suffixOverrides=",">
+            <if test="orderNumber != null">
+                order_number = #{orderNumber},
+            </if>
+            <if test="tradingHour != null">
+                trading_hour = #{tradingHour},
+            </if>
+            <if test="money != null">
+                money = #{money},
+            </if>
+            <if test="state != null">
+                state = #{state},
+            </if>
+            <if test="detailOrderId != null">
+                detail_order_id = #{detailOrderId},
+            </if>
+            <if test="addressOrderId != null">
+                address_order_id = #{addressOrderId},
+            </if>
+        </trim>
+    </sql>
+
+    <!-- 新增对象 -->
+    <insert id="addObj" parameterType="com.itcase.automall.entity.Orders">
+        INSERT INTO orders
+            <include refid="baseColumn"/>
+        VALUES
+            <include refid="baseValue"/>
+    </insert>
+
+    <!-- 根据id删除单个订单的信息 -->
+    <delete id="deleteObj" parameterType="LONG">
+        DELETE FROM orders WHERE id = #{id}
+    </delete>
+
+    <!-- 根据所给id进行批量删除 -->
+    <delete id="batchDeleteByIds" parameterType="java.util.List">
+        DELETE FROM orders WHERE id IN
+        <foreach collection="list" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!--根据订单id查询全部用信息-->
+    <select id="findAllObj" resultType="com.itcase.automall.entity.Orders">
+        SELECT * FROM orders
+    </select>
+
+    <!-- 根据订单id查询单个用户的全部信息-->
+    <select id="findById" parameterType="LONG" resultType="com.itcase.automall.entity.Orders">
+        SELECT * FROM orders WHERE id = #{id}
+    </select>
+
+    <!-- 根据订单id修改单个对象 -->
+    <update id="updateObj" parameterType="com.itcase.automall.entity.Orders">
+        UPDATE orders SET
+            <include refid="editSql"/>
+        WHERE
+            id = #{id}
+    </update>
+
+
+
+    <!-- 查询用户的所有订单的全部信息【订单、用户、类型、汽车、详情】返回的对象集合 -->
+    <resultMap type="com.itcase.automall.entity.Orders" id="ordersAllInfoMap">
+        <id column="id" property="id"/>
+        <result column="order_number" property="orderNumber"/>
+        <result column="trading_hour" property="tradingHour"/>
+        <result column="money" property="money"/>
+        <result column="state" property="state"/>
+        <result column="detail_order_id" property="detailOrderId"/>
+        <result column="address_order_id" property="addressOrderId"/>
+        <association property="addressOrder" javaType="com.itcase.automall.entity.Address"
+                     resultMap="addressOrdersMap"/>
+        <association property="detailOrder" javaType="com.itcase.automall.entity.Detail"
+                     resultMap="DetailOrdersMap"/>
+    </resultMap>
+    <!-- 地址对象的map，关联用户对象 -->
+    <resultMap type="com.itcase.automall.entity.Address" id="addressOrdersMap">
+        <id column="id" property="id"/>
+        <result column="province" property="province"/>
+        <result column="city" property="city"/>
+        <result column="district" property="district"/>
+        <result column="particular" property="particular"/>
+        <result column="default_setting" property="defaultSetting"/>
+        <result column="user_address_id" property="userAddressId"/>
+        <association property="userAddress" javaType="com.itcase.automall.entity.User"
+                     resultMap="userMap"/>
+    </resultMap>
+    <!-- 用户对象的map -->
+    <resultMap id="userMap" type="com.itcase.automall.entity.User">
+        <id column="id" property="id"/>
+        <result column="account_name" property="accountName"/>
+        <result column="account" property="account"/>
+        <result column="password" property="password"/>
+        <result column="head_portrait" property="headPortrait"/>
+        <result column="user_name" property="userName"/>
+        <result column="sex" property="sex"/>
+        <result column="telephone" property="telephone"/>
+        <result column="birthday" property="birthday"/>
+        <result column="id_card" property="idCard"/>
+        <result column="is_admin" property="isAdmin"/>
+        <result column="token" property="token"/>
+    </resultMap>
+    <!-- 详情对象的map，关联汽车对象 -->
+    <resultMap type="com.itcase.automall.entity.Detail" id="DetailOrdersMap">
+        <id column="id" property="id"/>
+        <result column="color" property="color"/>
+        <result column="variable_speed" property="variableSpeed"/>
+        <result column="payload" property="payload"/>
+        <result column="axle_base" property="axleBase"/>
+        <result column="torque" property="torque"/>
+        <result column="weight" property="weight"/>
+        <result column="engine" property="engine"/>
+        <result column="dynamical_system" property="dynamicalSystem"/>
+        <result column="displacement" property="displacement"/>
+        <result column="cylinder_number" property="cylinderNumber"/>
+        <result column="drive_mode" property="driveMode"/>
+        <result column="descriptive" property="descriptive"/>
+        <result column="car_detail_id" property="carDetailId"/>
+        <association property="carDetail" javaType="com.itcase.automall.entity.Car"
+                     resultMap="categoryCarMap"/>
+    </resultMap>
+    <!-- 汽车对象的map，关联类别对象 -->
+    <resultMap id="categoryCarMap" type="com.itcase.automall.entity.Car">
+        <id column="id" property="id"/>
+        <result column="car_name" property="carName"/>
+        <result column="price" property="price"/>
+        <result column="thumb_img" property="thumbImg"/>
+        <result column="selling" property="selling"/>
+        <result column="shelves_time" property="shelvesTime"/>
+        <result column="category_car_id" property="categoryCarId"/>
+        <association property="categoryCar" javaType="com.itcase.automall.entity.Category"
+                     resultMap="categoryMap"/>
+    </resultMap>
+    <!-- 类别对象的map -->
+    <resultMap id="categoryMap" type="com.itcase.automall.entity.Category">
+        <id column="id" property="id"/>
+        <result column="genre" property="genre"/>
+        <result column="series" property="series"/>
+        <result column="brand" property="brand"/>
+    </resultMap>
+
+    <sql id="userOrdersSql">
+        <where>
+            <if test="cons.userAddressId != null and cons.userAddressId != ''">
+                AND user_address_id = #{cons.userAddressId}
+            </if>
+            <if test="cons.state != null and cons.state != ''">
+                AND state = #{cons.state}
+            </if>
+        </where>
+        ORDER BY trading_hour DESC
+    </sql>
+    <select id="findByPage" parameterType="java.util.Map" resultMap="ordersAllInfoMap">
+        SELECT * FROM
+            orders
+        INNER JOIN
+            address
+        ON
+            orders.address_order_id = address.id
+        INNER JOIN
+            `user`
+        ON
+            address.user_address_id = `user`.id
+        INNER JOIN
+            detail
+        ON
+            orders.detail_order_id = detail.id
+        INNER JOIN
+            car
+        ON
+            detail.car_detail_id = car.id
+        INNER JOIN
+            category
+        ON
+            car.category_car_id = category.id
+        <include refid="userOrdersSql"/>
+        LIMIT #{start},#{rowsCount}
+    </select>
+    <!-- 显示查询总数 -->
+    <select id="getRowsCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT count(*) total FROM
+            orders
+        INNER JOIN
+            address
+        ON
+            orders.address_order_id = address.id
+        INNER JOIN
+            `user`
+        ON
+            address.user_address_id = `user`.id
+        INNER JOIN
+            detail
+        ON
+            orders.detail_order_id = detail.id
+        INNER JOIN
+            car
+        ON
+            detail.car_detail_id = car.id
+        INNER JOIN
+            category
+        ON
+            car.category_car_id = category.id
+        <include refid="userOrdersSql"/>
+    </select>
+</mapper>

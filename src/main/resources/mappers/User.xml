@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itcase.automall.dao.inter.IUserDao">
+
+    <!-- 基本sql字段 -->
+    <sql id="baseColumn">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="accountName != null">
+                account_name,
+            </if>
+            <if test="account != null">
+                account,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="headPortrait != null">
+                head_portrait,
+            </if>
+            <if test="userName != null">
+                user_name,
+            </if>
+            <if test="sex != null">
+                sex,
+            </if>
+            <if test="telephone != null">
+                telephone,
+            </if>
+            <if test="birthday != null">
+                birthday,
+            </if>
+            <if test="idCard != null">
+                id_card,
+            </if>
+            <if test="isAdmin != null">
+                is_admin,
+            </if>
+            <if test="token != null">
+                token,
+            </if>
+        </trim>
+    </sql>
+
+    <!-- 基本值sql -->
+    <sql id="baseValue">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="accountName != null">
+                #{accountName},
+            </if>
+            <if test="account != null">
+                #{account},
+            </if>
+            <if test="password != null">
+                #{password},
+            </if>
+            <if test="headPortrait != null">
+                #{headPortrait},
+            </if>
+            <if test="userName != null">
+                #{userName},
+            </if>
+            <if test="sex != null">
+                #{sex},
+            </if>
+            <if test="telephone != null">
+                #{telephone},
+            </if>
+            <if test="birthday != null">
+                #{birthday},
+            </if>
+            <if test="idCard != null">
+                #{idCard},
+            </if>
+            <if test="isAdmin != null">
+                #{isAdmin},
+            </if>
+            <if test="token != null">
+                #{token},
+            </if>
+        </trim>
+    </sql>
+
+    <!-- 修改信息sql -->
+    <sql id="editSql">
+        <trim suffixOverrides=",">
+            <if test="accountName != null">
+                account_name = #{accountName},
+            </if>
+            <if test="account != null">
+                account = #{account},
+            </if>
+            <if test="password != null">
+                password = #{password},
+            </if>
+            <if test="headPortrait != null">
+                head_portrait = #{headPortrait},
+            </if>
+            <if test="userName != null">
+                user_name = #{userName},
+            </if>
+            <if test="sex != null">
+                sex = #{sex},
+            </if>
+            <if test="telephone != null">
+                telephone = #{telephone},
+            </if>
+            <if test="birthday != null">
+                birthday = #{birthday},
+            </if>
+            <if test="idCard != null">
+                id_card = #{idCard},
+            </if>
+            <if test="isAdmin != null">
+                is_admin = #{isAdmin},
+            </if>
+            <if test="token != null">
+                token = #{token},
+            </if>
+        </trim>
+    </sql>
+
+    <!-- 新增对象 -->
+    <insert id="addObj" parameterType="com.itcase.automall.entity.User">
+        INSERT INTO `user`
+            <include refid="baseColumn"/>
+        VALUES
+            <include refid="baseValue"/>
+    </insert>
+
+    <!-- 根据唯一标识删除单个用户的全部信息 -->
+    <delete id="deleteObj" parameterType="LONG">
+        DELETE FROM `user` WHERE id = #{id}
+    </delete>
+
+    <!-- 根据所给id进行批量删除 -->
+    <delete id="batchDeleteByIds" parameterType="java.util.List">
+        DELETE FROM `user` WHERE id IN
+        <foreach collection="list" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!--根据用户唯一标识查询全部用信息-->
+    <select id="findAllObj" resultType="com.itcase.automall.entity.User">
+        SELECT * FROM `user`
+    </select>
+
+    <!-- 根据用户唯一标识查询单个用户的全部信息-->
+    <select id="findById" parameterType="LONG" resultType="com.itcase.automall.entity.User">
+        SELECT * FROM `user` WHERE id = #{id}
+    </select>
+
+    <!--    <select id="selectIsOrder" parameterType="LONG" resultType="java.lang.Integer">
+        SELECT count(*) FROM
+            orders
+        WHERE
+            address_order_id
+        IN (SELECT address.id FROM
+                `user`
+            INNER JOIN
+                address
+            ON
+                `user`.id = address.user_address_id
+            WHERE
+                `user`.id = #{id})
+    </select>-->
+
+    <!-- 根据用户唯一标识修改单个对象 -->
+    <update id="updateObj" parameterType="com.itcase.automall.entity.User">
+        UPDATE `user` SET
+            <include refid="editSql"/>
+        WHERE
+            id = #{id}
+    </update>
+
+
+
+    <resultMap id="pageMap" type="java.util.Map">
+        <id column="id" property="id"/>
+        <result column="account_name" property="account_name"/>
+        <result column="account" property="account"/>
+        <result column="password" property="password"/>
+        <result column="head_portrait" property="head_portrait"/>
+        <result column="user_name" property="user_name"/>
+        <result column="sex" property="sex"/>
+        <result column="telephone" property="telephone"/>
+        <result column="birthday" property="birthday"/>
+        <result column="id_card" property="id_card"/>
+        <result column="is_admin" property="is_admin"/>
+        <result column="token" property="token"/>
+    </resultMap>
+    <!-- 分页查询的sql -->
+    <sql id="selectByPage">
+        <where>
+            <if test="cons.telephone != null and cons.telephone != ''">
+                AND telephone = #{cons.telephone}
+            </if>
+            <if test="cons.accountName != null and cons.accountName != ''">
+                AND account_name LIKE concat('%',#{cons.accountName},'%')
+            </if>
+        </where>
+    </sql>
+    <!-- 分页查询 -->
+    <select id="findByPage" parameterType="java.util.Map" resultMap="pageMap">
+        SELECT * FROM `user`
+            <include refid="selectByPage"/>
+        LIMIT #{start},#{rowsCount}
+    </select>
+    <!-- 显示查询总数 -->
+    <select id="getRowsCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT count(*) total FROM `user`
+            <include refid="selectByPage"/>
+    </select>
+
+
+    <sql id="loginSql">
+        <where>
+                <if test="cons.telephone != null and cons.telephone != ''">
+                    AND telephone = #{cons.telephone}
+                </if>
+                <if test="cons.password != null and cons.password != ''">
+                    AND password = #{cons.password}
+                </if>
+        </where>
+    </sql>
+    <select id="findByAccount" parameterType="java.util.Map" resultType="com.itcase.automall.entity.User">
+        SELECT * FROM `user`
+            <include refid="loginSql"/>
+    </select>
+</mapper>

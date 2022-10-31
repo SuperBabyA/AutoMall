@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itcase.automall.dao.inter.ICollectionDao">
+
+    <!-- 基本sql字段 -->
+    <sql id="baseColumn">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="userCollectionId != null">
+                user_collection_id,
+            </if>
+            <if test="carCollectionId != null">
+                car_collection_id,
+            </if>
+        </trim>
+    </sql>
+
+    <!-- 基本值sql -->
+    <sql id="baseValue">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="userCollectionId != null">
+                #{userCollectionId},
+            </if>
+            <if test="carCollectionId != null">
+                #{carCollectionId},
+            </if>
+        </trim>
+    </sql>
+
+    <!-- 修改信息sql -->
+    <sql id="editSql">
+        <trim suffixOverrides=",">
+            <if test="userCollectionId != null">
+                user_collection_id = #{userCollectionId},
+            </if>
+            <if test="carCollectionId != null">
+                car_collection_id = #{carCollectionId},
+            </if>
+        </trim>
+    </sql>
+
+    <!-- 新增对象 -->
+    <insert id="addObj" parameterType="com.itcase.automall.entity.Collection">
+        INSERT INTO collection
+            <include refid="baseColumn"/>
+        VALUES
+            <include refid="baseValue"/>
+    </insert>
+
+    <!-- 根据id删除单个收藏信息 -->
+    <delete id="deleteObj" parameterType="LONG">
+        DELETE FROM collection WHERE id = #{id}
+    </delete>
+
+    <!-- 根据所给id进行批量删除 -->
+    <delete id="batchDeleteByIds" parameterType="java.util.List">
+        DELETE FROM collection WHERE id IN
+        <foreach collection="list" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!--查询全部收藏信息-->
+    <select id="findAllObj" resultType="com.itcase.automall.entity.Collection">
+        SELECT * FROM collection
+    </select>
+
+    <!-- 根据收藏id查询单条收藏信息-->
+    <select id="findById" parameterType="LONG" resultType="com.itcase.automall.entity.Collection">
+        SELECT * FROM collection WHERE id = #{id}
+    </select>
+
+    <!-- 根据收藏id标识修改单个对象 -->
+    <update id="updateObj" parameterType="com.itcase.automall.entity.Collection">
+        UPDATE collection SET
+            <include refid="editSql"/>
+        WHERE
+            id = #{id}
+    </update>
+
+
+    <!-- 查询单个用户的收藏 -->
+    <resultMap type="com.itcase.automall.entity.Collection" id="userCollectionInfoMap">
+        <id column="id" property="id"/>
+        <result column="collection_time" property="collectionTime"/>
+        <result column="user_collection_id" property="userCollectionId"/>
+        <result column="car_collection_id" property="carCollectionId"/>
+        <association column="user_collection_id" property="userCollection"
+                     javaType="com.itcase.automall.entity.User"
+                     select="com.itcase.automall.dao.inter.IUserDao.findById"/>
+        <association property="carCollection" javaType="com.itcase.automall.entity.Car"
+                     resultMap="carCollectionMap"/>
+    </resultMap>
+    <resultMap type="com.itcase.automall.entity.Car" id="carCollectionMap">
+        <id column="id" property="id"/>
+        <result column="car_name" property="carName"/>
+        <result column="price" property="price"/>
+        <result column="thumb_img" property="thumbImg"/>
+        <result column="selling" property="selling"/>
+        <result column="shelves_time" property="shelvesTime"/>
+        <result column="category_car_id" property="categoryCarId"/>
+        <association property="categoryCar" javaType="com.itcase.automall.entity.Category"
+                     resultMap="categoryCarMap"/>
+    </resultMap>
+    <resultMap type="com.itcase.automall.entity.Category" id="categoryCarMap">
+        <id column="id" property="id"/>
+        <result column="genre" property="genre"/>
+        <result column="series" property="series"/>
+        <result column="brand" property="brand"/>
+    </resultMap>
+    <select id="findUserCollection" resultMap="userCollectionInfoMap" parameterType="LONG">
+        SELECT * FROM
+            collection
+        INNER JOIN
+            `user`
+        ON
+            collection.user_collection_id = `user`.id
+        INNER JOIN
+            car
+        ON
+            collection.car_collection_id = car.id
+        INNER JOIN
+            category
+        ON
+            car.category_car_id = category.id
+        WHERE
+            collection.user_collection_id = #{userCollectionId}
+        ORDER BY collection.collection_time DESC
+    </select>
+</mapper>

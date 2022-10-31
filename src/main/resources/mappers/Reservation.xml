@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itcase.automall.dao.inter.IReservationDao">
+    <!-- 基本sql字段 -->
+    <sql id="baseColumn">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="subscribers != null">
+                subscribers,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="telephone != null">
+                telephone,
+            </if>
+            <if test="reservationModel != null">
+                reservation_model,
+            </if>
+            <if test="reservationTime != null">
+                reservation_time,
+            </if>
+            <if test="dispose != null">
+                dispose,
+            </if>
+        </trim>
+    </sql>
+
+    <!-- 基本值sql -->
+    <sql id="baseValue">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="subscribers != null">
+                #{subscribers},
+            </if>
+            <if test="email != null">
+                #{email},
+            </if>
+            <if test="telephone != null">
+                #{telephone},
+            </if>
+            <if test="reservationModel != null">
+                #{reservationModel},
+            </if>
+            <if test="reservationTime != null">
+                #{reservationTime},
+            </if>
+            <if test="dispose != null">
+                #{dispose},
+            </if>
+        </trim>
+    </sql>
+
+    <!-- 修改信息sql -->
+    <sql id="editSql">
+        <trim suffixOverrides=",">
+            <if test="subscribers != null">
+                subscribers = #{subscribers},
+            </if>
+            <if test="email != null">
+                email = #{email},
+            </if>
+            <if test="telephone != null">
+                telephone = #{telephone},
+            </if>
+            <if test="reservationModel != null">
+                reservation_model = #{reservationModel},
+            </if>
+            <if test="reservationTime != null">
+                reservation_time = #{reservationTime},
+            </if>
+            <if test="dispose != null">
+                dispose = #{dispose},
+            </if>
+        </trim>
+    </sql>
+
+    <!-- 新增对象 -->
+    <insert id="addObj" parameterType="com.itcase.automall.entity.Reservation">
+        INSERT INTO reservation
+            <include refid="baseColumn"/>
+        VALUES
+            <include refid="baseValue"/>
+    </insert>
+
+    <!-- 根据唯一标识删除单个用户的全部信息 -->
+    <delete id="deleteObj" parameterType="LONG">
+        DELETE FROM reservation WHERE id = #{id}
+    </delete>
+
+    <!-- 根据所给id进行批量删除 -->
+    <delete id="batchDeleteByIds" parameterType="java.util.List">
+        DELETE FROM reservation WHERE id IN
+        <foreach collection="list" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!--根据用户唯一标识查询全部用信息-->
+    <select id="findAllObj" resultType="com.itcase.automall.entity.Reservation">
+        SELECT * FROM reservation
+    </select>
+
+    <!-- 根据用户唯一标识查询单个用户的全部信息-->
+    <select id="findById" parameterType="LONG" resultType="com.itcase.automall.entity.Reservation">
+        SELECT * FROM reservation WHERE id = #{id}
+    </select>
+
+    <!-- 根据用户唯一标识修改单个对象 -->
+    <update id="updateObj" parameterType="com.itcase.automall.entity.Reservation">
+        UPDATE reservation SET
+            <include refid="editSql"/>
+        WHERE
+            id = #{id}
+    </update>
+
+
+    <resultMap id="pageMap" type="java.util.Map">
+        <id column="id" property="id"/>
+        <result column="phone" property="phone"/>
+        <result column="email" property="email"/>
+        <result column="telephone" property="telephone"/>
+        <result column="subscribers" property="subscribers"/>
+        <result column="reservation_model" property="reservationModel"/>
+        <result column="reservation_time" property="reservationTime"/>
+        <result column="reservation_time" property="reservationTime"/>
+        <result column="dispose" property="dispose"/>
+    </resultMap>
+    <!-- 分页查询的sql -->
+    <sql id="selectByPage">
+        <where>
+            <if test="cons.dispose != null and cons.dispose != ''">
+                dispose = #{cons.dispose}
+            </if>
+        </where>
+    </sql>
+    <!-- 分页查询 -->
+    <select id="findByPage" parameterType="java.util.Map" resultMap="pageMap">
+        SELECT * FROM reservation
+            <include refid="selectByPage"/>
+        LIMIT #{start},#{rowsCount}
+    </select>
+    <!-- 显示查询总数 -->
+    <select id="getRowsCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT count(*) total FROM reservation
+        <include refid="selectByPage"/>
+    </select>
+
+</mapper>

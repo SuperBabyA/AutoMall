@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itcase.automall.dao.inter.IFeedbackDao">
+
+    <!-- 基本sql字段 -->
+    <sql id="baseColumn">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+            <if test="motorcycleType != null">
+                motorcycle_type,
+            </if>
+        </trim>
+    </sql>
+
+    <!-- 基本值sql -->
+    <sql id="baseValue">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="phone != null">
+                #{phone},
+            </if>
+            <if test="email != null">
+                #{email},
+            </if>
+            <if test="content != null">
+                #{content},
+            </if>
+            <if test="motorcycleType != null">
+                #{motorcycleType},
+            </if>
+        </trim>
+    </sql>
+
+    <!-- 修改信息sql -->
+    <sql id="editSql">
+        <trim suffixOverrides=",">
+            <if test="phone != null">
+                phone = #{phone},
+            </if>
+            <if test="email != null">
+                email = #{email},
+            </if>
+            <if test="content != null">
+                content = #{content},
+            </if>
+            <if test="motorcycleType != null">
+                motorcycle_type = #{motorcycleType},
+            </if>
+            <if test="dispose != null">
+                dispose = #{dispose},
+            </if>
+        </trim>
+    </sql>
+
+    <!-- 新增对象 -->
+    <insert id="addObj" parameterType="com.itcase.automall.entity.Feedback">
+        INSERT INTO feedback
+            <include refid="baseColumn"/>
+        VALUES
+            <include refid="baseValue"/>
+    </insert>
+
+    <!-- 根据唯一标识删除单个用户的全部信息 -->
+    <delete id="deleteObj" parameterType="LONG">
+        DELETE FROM feedback WHERE id = #{id}
+    </delete>
+
+    <!-- 根据所给id进行批量删除 -->
+    <delete id="batchDeleteByIds" parameterType="java.util.List">
+        DELETE FROM feedback WHERE id IN
+        <foreach collection="list" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!--根据用户唯一标识查询全部用信息-->
+    <select id="findAllObj" resultType="com.itcase.automall.entity.Feedback">
+        SELECT * FROM feedback
+    </select>
+
+    <!-- 根据用户唯一标识查询单个用户的全部信息-->
+    <select id="findById" parameterType="LONG" resultType="com.itcase.automall.entity.Feedback">
+        SELECT * FROM feedback WHERE id = #{id}
+    </select>
+
+    <!-- 根据用户唯一标识修改单个对象 -->
+    <update id="updateObj" parameterType="com.itcase.automall.entity.Feedback">
+        UPDATE feedback SET
+            <include refid="editSql"/>
+        WHERE
+            id = #{id}
+    </update>
+
+
+    <resultMap id="pageMap" type="java.util.Map">
+        <id column="id" property="id"/>
+        <result column="phone" property="phone"/>
+        <result column="email" property="email"/>
+        <result column="content" property="content"/>
+        <result column="motorcycle_type" property="motorcycleType"/>
+        <result column="dispose" property="dispose"/>
+    </resultMap>
+    <!-- 分页查询的sql -->
+    <sql id="selectByPage">
+        <where>
+            <if test="cons.dispose != null and cons.dispose != ''">
+                AND dispose = #{cons.dispose}
+            </if>
+        </where>
+    </sql>
+    <!-- 分页查询 -->
+    <select id="findByPage" parameterType="java.util.Map" resultMap="pageMap">
+        SELECT * FROM feedback
+            <include refid="selectByPage"/>
+        LIMIT #{start},#{rowsCount}
+    </select>
+    <!-- 显示查询总数 -->
+    <select id="getRowsCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT count(*) total FROM feedback
+        <include refid="selectByPage"/>
+    </select>
+</mapper>

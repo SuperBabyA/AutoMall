@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itcase.automall.dao.inter.IAddressDao">
+
+    <!-- 基本sql字段 -->
+    <sql id="baseColumn">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="province != null">
+                province,
+            </if>
+            <if test="city != null">
+                city,
+            </if>
+            <if test="district != null">
+                district,
+            </if>
+            <if test="particular != null">
+                particular,
+            </if>
+            <if test="defaultSetting != null">
+                default_setting,
+            </if>
+            <if test="userAddressId != null">
+                user_address_id,
+            </if>
+        </trim>
+    </sql>
+
+    <!-- 基本值sql -->
+    <sql id="baseValue">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="province != null">
+                #{province},
+            </if>
+            <if test="city != null">
+                #{city},
+            </if>
+            <if test="district != null">
+                #{district},
+            </if>
+            <if test="particular != null">
+                #{particular},
+            </if>
+            <if test="defaultSetting != null">
+                #{defaultSetting},
+            </if>
+            <if test="userAddressId != null">
+                #{userAddressId},
+            </if>
+        </trim>
+    </sql>
+
+    <!-- 修改信息sql -->
+    <sql id="editSql">
+        <trim suffixOverrides=",">
+            <if test="province != null">
+                province = #{province},
+            </if>
+            <if test="city != null">
+                city = #{city},
+            </if>
+            <if test="district != null">
+                district = #{district},
+            </if>
+            <if test="particular != null">
+                particular = #{particular},
+            </if>
+            <if test="defaultSetting != null">
+                default_setting = #{defaultSetting},
+            </if>
+            <if test="userAddressId != null">
+                user_address_id = #{userAddressId},
+            </if>
+        </trim>
+    </sql>
+
+    <!-- 新增对象 -->
+    <insert id="addObj" parameterType="com.itcase.automall.entity.Address">
+        INSERT INTO address
+            <include refid="baseColumn"/>
+        VALUES
+            <include refid="baseValue"/>
+    </insert>
+
+    <!-- 根据id删除地址的全部信息 -->
+    <delete id="deleteObj" parameterType="LONG">
+        DELETE FROM address WHERE id = #{id}
+    </delete>
+
+    <!-- 根据所给id进行批量删除 -->
+    <delete id="batchDeleteByIds" parameterType="java.util.List">
+        DELETE FROM address WHERE id IN
+        <foreach collection="list" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!--查询地址全部用信息-->
+    <select id="findAllObj" resultType="com.itcase.automall.entity.Address">
+        SELECT * FROM address
+    </select>
+
+    <!-- 根据地址id查询地址的全部信息-->
+    <select id="findById" parameterType="LONG" resultType="com.itcase.automall.entity.Address">
+        SELECT * FROM address WHERE id = #{id}
+    </select>
+
+    <!-- 根据地址id修改单个对象 -->
+    <update id="updateObj" parameterType="com.itcase.automall.entity.Address">
+        UPDATE address SET
+            <include refid="editSql"/>
+        WHERE
+            id = #{id}
+    </update>
+
+
+
+    <resultMap type="com.itcase.automall.entity.Address" id="userAddressMap">
+        <id column="id" property="id"/>
+        <result column="province" property="province"/>
+        <result column="city" property="city"/>
+        <result column="district" property="district"/>
+        <result column="particular" property="particular"/>
+        <result column="default_setting" property="defaultSetting"/>
+        <result column="user_address_id" property="userAddressId"/>
+        <association column="user_address_id" property="userAddress"
+                     javaType="com.itcase.automall.entity.User"
+                     select="com.itcase.automall.dao.inter.IUserDao.findById"/>
+    </resultMap>
+    <!-- 根据用户id查询单个用户的全部地址 -->
+    <select id="findUserAddress" parameterType="LONG" resultMap="userAddressMap">
+        SELECT * FROM
+            address
+        INNER JOIN
+            `user`
+        ON
+            `user`.id = address.user_address_id
+        WHERE
+            user_address_id = #{id}
+        ORDER BY
+            default_setting
+    </select>
+
+    <!-- 修改信息sql -->
+    <sql id="modifySql">
+        <trim suffixOverrides=",">
+            <if test="province != null">
+                province = #{province},
+            </if>
+            <if test="city != null">
+                city = #{city},
+            </if>
+            <if test="district != null">
+                district = #{district},
+            </if>
+            <if test="particular != null">
+                particular = #{particular},
+            </if>
+            <if test="defaultSetting != null">
+                default_setting = #{defaultSetting},
+            </if>
+        </trim>
+    </sql>
+    <!-- 根据地址与用户的外键user_address_id修改用户地址 -->
+    <!--<update id="modifyUserAddress" parameterType="com.itcase.automall.entity.Address">
+        UPDATE address SET
+            <include refid="modifySql"/>
+        WHERE
+            user_address_id = #{userAddressId}
+        AND
+            id = #{id}
+    </update>-->
+</mapper>

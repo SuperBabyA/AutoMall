@@ -1,0 +1,92 @@
+package com.itcase.automall.controller.Impl;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itcase.automall.bll.Impl.AbsSuperService;
+import com.itcase.automall.controller.inter.ICarController;
+import com.itcase.automall.entity.Car;
+import com.itcase.automall.utils.HttpResult;
+import com.itcase.automall.utils.snowflake.IdGeneratorSnowflake;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/car")
+public class CarControllerImpl extends AbsSuperController implements ICarController {
+
+    @Autowired
+    private Car car;
+
+    @Autowired
+    @Qualifier("carServiceImpl")
+    private AbsSuperService carService;
+
+    @Override
+    public AbsSuperService getBll() {
+        return carService;
+    }
+
+    //根据id删除汽车对象
+    @DeleteMapping("/delete_car/{id}")
+    public String deleteCar(@PathVariable Long id) throws IOException {
+        car.setId(id);
+        getBll().setModel(car);
+        HttpResult httpResult = getBll().delete();
+        return new ObjectMapper().writeValueAsString(httpResult);
+    }
+
+    //多条件分页查询汽车及类型
+    @GetMapping("/find_by_page_car/{pageNumber}/{rowsCount}/{minPrice}/{maxPrice}/{shelvesTime}/{genre}")
+    public String findByPage(@PathVariable("pageNumber") Integer pageNumber,
+                             @PathVariable("rowsCount") Integer rowsCount,
+                             @PathVariable("minPrice") Float minPrice,
+                             @PathVariable("maxPrice") Float maxPrice,
+                             @PathVariable("shelvesTime") String shelvesTime,
+                             @PathVariable("genre") String genre) throws IOException, ParseException {
+        HashMap<String, Object> cons = new HashMap<>();
+        if (minPrice != null && minPrice != -1)
+            cons.put("minPrice", minPrice);
+        if (maxPrice != null && maxPrice != -1)
+            cons.put("maxPrice", maxPrice);
+        if (!"null".equals(shelvesTime) && shelvesTime != null &&
+                !"".equals(shelvesTime))
+            cons.put("shelvesTime",new SimpleDateFormat("yyyy-MM-dd").parse(shelvesTime));
+        if (!"null".equals(genre) && genre != null &&
+                !"".equals(genre))
+            cons.put("genre",genre);
+        HttpResult httpResult = getBll().findByPage(cons, pageNumber, rowsCount);
+        return new ObjectMapper().writeValueAsString(httpResult);
+    }
+
+    //新增汽车对象
+    @PostMapping("/save_car")
+    public String saveCar(@RequestBody String carStr) throws IOException {
+        Car carObj = new ObjectMapper().readValue(carStr, Car.class);
+        carObj.setId(new IdGeneratorSnowflake().snowflakeId());
+        getBll().setModel(carObj);
+        HttpResult httpResult = getBll().save();
+        return new ObjectMapper().writeValueAsString(httpResult);
+    }
+
+    //根据id修改汽车信息
+    @PutMapping("/edit_car")
+    public String editCar(@RequestBody String carStr) throws IOException {
+        Car carObj = new ObjectMapper().readValue(carStr, Car.class);
+        getBll().setModel(carObj);
+        HttpResult httpResult = getBll().update();
+        return new ObjectMapper().writeValueAsString(httpResult);
+    }
+
+    //批量删除汽车信息
+    @PostMapping("/batch_del_car")
+    public String batchDel(@RequestBody List<Long> ids) throws IOException {
+        HttpResult httpResult = getBll().batchDel(ids);
+        return new ObjectMapper().writeValueAsString(httpResult);
+    }
+}

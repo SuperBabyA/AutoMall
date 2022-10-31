@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itcase.automall.dao.inter.ICarDao">
+
+    <!-- 基本sql字段 -->
+    <sql id="baseColumn">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="carName != null">
+                car_name,
+            </if>
+            <if test="price != null">
+                price,
+            </if>
+            <if test="thumbImg != null">
+                thumb_img,
+            </if>
+            <if test="selling != null">
+                selling,
+            </if>
+            <if test="shelvesTime != null">
+                shelves_time,
+            </if>
+            <if test="categoryCarId != null">
+                category_car_id,
+            </if>
+        </trim>
+    </sql>
+
+    <!-- 基本值sql -->
+    <sql id="baseValue">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="carName != null">
+                #{carName},
+            </if>
+            <if test="price != null">
+                #{price},
+            </if>
+            <if test="thumbImg != null">
+                #{thumbImg},
+            </if>
+            <if test="selling != null">
+                #{selling},
+            </if>
+            <if test="shelvesTime != null">
+                #{shelvesTime},
+            </if>
+            <if test="categoryCarId != null">
+                #{categoryCarId},
+            </if>
+        </trim>
+    </sql>
+
+    <!-- 修改信息sql -->
+    <sql id="editSql">
+        <trim suffixOverrides=",">
+            <if test="carName != null">
+                car_name = #{carName},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="thumbImg != null">
+                thumb_img = #{thumbImg},
+            </if>
+            <if test="selling != null">
+                selling = #{selling},
+            </if>
+            <if test="shelvesTime != null">
+                shelves_time = #{shelvesTime},
+            </if>
+            <if test="categoryCarId != null">
+                category_car_id = #{categoryCarId},
+            </if>
+        </trim>
+    </sql>
+
+    <!-- 新增对象 -->
+    <insert id="addObj" parameterType="com.itcase.automall.entity.Car">
+        INSERT INTO car
+            <include refid="baseColumn"/>
+        VALUES
+            <include refid="baseValue"/>
+    </insert>
+
+    <!-- 根据唯一标识删除单个汽车的全部信息 -->
+    <delete id="deleteObj" parameterType="LONG">
+        DELETE FROM car WHERE id = #{id}
+    </delete>
+
+    <!-- 根据所给id进行批量删除 -->
+    <delete id="batchDeleteByIds" parameterType="java.util.List">
+        DELETE FROM car WHERE id IN
+        <foreach collection="list" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!--查询汽车全部用信息-->
+    <select id="findAllObj" resultType="com.itcase.automall.entity.Car">
+        SELECT * FROM car
+    </select>
+
+    <!-- 根据汽车唯一标识查询单个汽车的全部信息-->
+    <select id="findById" parameterType="LONG" resultType="com.itcase.automall.entity.Car">
+        SELECT * FROM car WHERE id = #{id}
+    </select>
+
+    <!-- 根据汽车唯一标识修改单个对象 -->
+    <update id="updateObj" parameterType="com.itcase.automall.entity.Car">
+        UPDATE car SET
+            <include refid="editSql"/>
+        WHERE
+            id = #{id}
+    </update>
+
+
+
+
+
+
+    <!-- 联合查询返回的集合 -->
+    <resultMap type="java.util.Map" id="CarClassifyQueryMap">
+        <id column="id" property="id"/>
+        <result column="car_name" property="carName"/>
+        <result column="price" property="price"/>
+        <result column="thumb_img" property="thumbImg"/>
+        <result column="selling" property="selling"/>
+        <result column="shelves_time" property="shelvesTime"/>
+        <result column="category_car_id" property="categoryCarId"/>
+        <association property="categoryCar" javaType="com.itcase.automall.entity.Category"
+                     resultMap="categoryMap"/>
+    </resultMap>
+    <!-- 类别对象的map -->
+    <resultMap id="categoryMap" type="com.itcase.automall.entity.Category">
+        <id column="id" property="id"/>
+        <result column="genre" property="genre"/>
+        <result column="series" property="series"/>
+        <result column="brand" property="brand"/>
+    </resultMap>
+    <!-- 分页查询的sql -->
+    <sql id="selectByPage">
+        <where>
+            <if test="cons.minPrice != null and cons.minPrice != ''
+                        and cons.maxPrice != null and cons.maxPrice != ''">
+                AND car.price BETWEEN #{cons.minPrice} AND #{cons.maxPrice}
+            </if>
+            <if test="cons.shelvesTime != null">
+                AND car.shelves_time > #{cons.shelvesTime}
+            </if>
+            <if test="cons.genre != null and cons.genre != ''">
+                AND category.genre = #{cons.genre}
+            </if>
+            <if test="cons == null">
+                AND category.id IS NOT NULL
+            </if>
+        </where>
+    </sql>
+    <!-- 分页查询 -->
+    <select id="findByPage" parameterType="java.util.Map" resultMap="CarClassifyQueryMap">
+        SELECT * FROM
+            car
+        INNER JOIN
+            category
+        ON
+            car.category_car_id = category.id
+        <include refid="selectByPage"/>
+        LIMIT #{start},#{rowsCount}
+    </select>
+    <!-- 显示查询总数 -->
+    <select id="getRowsCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT count(*) total FROM
+            car
+        INNER JOIN
+            category
+        ON
+            car.category_car_id = category.id
+        <include refid="selectByPage"/>
+    </select>
+
+    <!-- 时间升序(降序)查询 -->
+    <!--<select id="timeClassifyQueryDesc" resultMap="CarClassifyQueryMap">
+        SELECT * FROM
+            car
+        INNER JOIN
+            category
+        ON
+            car.id = category.car_category_id
+        ORDER BY
+            car.shelves_time desc
+    </select>
+    <select id="timeClassifyQueryAsc" resultMap="CarClassifyQueryMap">
+        SELECT * FROM
+            car
+        INNER JOIN
+            category
+        ON
+            car.id = category.car_category_id
+        ORDER BY
+            car.shelves_time
+    </select>
+
+    <select id="typeClassifyQueryDesc" parameterType="STRING" resultMap="CarClassifyQueryMap">
+        SELECT * FROM
+            category
+        INNER JOIN
+            car
+        ON
+            category.car_category_id = car.id
+        WHERE
+            category.type = #{cons}
+        ORDER BY
+            shelves_time DESC
+    </select>-->
+</mapper>

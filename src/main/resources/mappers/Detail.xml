@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itcase.automall.dao.inter.IDetailDao">
+
+    <!-- 基本sql字段 -->
+    <sql id="baseColumn">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="color != null">
+                color,
+            </if>
+            <if test="variableSpeed != null">
+                variable_speed,
+            </if>
+            <if test="payload != null">
+                payload,
+            </if>
+            <if test="axleBase != null">
+                axle_base,
+            </if>
+            <if test="torque != null">
+                torque,
+            </if>
+            <if test="weight != null">
+                weight,
+            </if>
+            <if test="engine != null">
+                engine,
+            </if>
+            <if test="dynamicalSystem != null">
+                dynamical_system,
+            </if>
+            <if test="displacement != null">
+                displacement,
+            </if>
+            <if test="cylinderNumber != null">
+                cylinder_number,
+            </if>
+            <if test="driveMode != null">
+                drive_mode,
+            </if>
+            <if test="descriptive != null">
+                descriptive,
+            </if>
+            <if test="carDetailId != null">
+                car_detail_id,
+            </if>
+        </trim>
+    </sql>
+
+    <!-- 基本值sql -->
+    <sql id="baseValue">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="color != null">
+                #{color},
+            </if>
+            <if test="variableSpeed != null">
+                #{variableSpeed},
+            </if>
+            <if test="payload != null">
+                #{payload},
+            </if>
+            <if test="axleBase != null">
+                #{axleBase},
+            </if>
+            <if test="torque != null">
+                #{torque},
+            </if>
+            <if test="weight != null">
+                #{weight},
+            </if>
+            <if test="engine != null">
+                #{engine},
+            </if>
+            <if test="dynamicalSystem != null">
+                #{dynamicalSystem},
+            </if>
+            <if test="displacement != null">
+                #{displacement},
+            </if>
+            <if test="cylinderNumber != null">
+                #{cylinderNumber},
+            </if>
+            <if test="driveMode != null">
+                #{driveMode},
+            </if>
+            <if test="descriptive != null">
+                #{descriptive},
+            </if>
+            <if test="carDetailId != null">
+                #{carDetailId},
+            </if>
+        </trim>
+    </sql>
+
+    <!-- 修改信息sql -->
+    <sql id="editSql">
+        <trim suffixOverrides=",">
+            <if test="color != null">
+                color = #{color},
+            </if>
+            <if test="variableSpeed != null">
+                variable_speed = #{variableSpeed},
+            </if>
+            <if test="payload != null">
+                payload = #{payload},
+            </if>
+            <if test="axleBase != null">
+                axle_base = #{axleBase},
+            </if>
+            <if test="torque != null">
+                torque = #{torque},
+            </if>
+            <if test="weight != null">
+                weight = #{weight},
+            </if>
+            <if test="engine != null">
+                engine = #{engine},
+            </if>
+            <if test="dynamicalSystem != null">
+                dynamical_system = #{dynamicalSystem},
+            </if>
+            <if test="displacement != null">
+                displacement = #{displacement},
+            </if>
+            <if test="cylinderNumber != null">
+                cylinder_number = #{cylinderNumber},
+            </if>
+            <if test="driveMode != null">
+                drive_mode = #{driveMode},
+            </if>
+            <if test="descriptive != null">
+                descriptive = #{descriptive},
+            </if>
+            <if test="carDetailId != null">
+                car_detail_id = #{carDetailId},
+            </if>
+        </trim>
+    </sql>
+
+    <!-- 新增对象 -->
+    <insert id="addObj" parameterType="com.itcase.automall.entity.Detail">
+        INSERT INTO detail
+            <include refid="baseColumn"/>
+        VALUES
+            <include refid="baseValue"/>
+    </insert>
+
+    <!-- 根据唯一标识删除单个汽车详情的全部信息 -->
+    <delete id="deleteObj" parameterType="LONG">
+        DELETE FROM detail WHERE id = #{id}
+    </delete>
+
+    <!-- 根据所给id进行批量删除 -->
+    <delete id="batchDeleteByIds" parameterType="java.util.List">
+        DELETE FROM detail WHERE id IN
+        <foreach collection="list" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!-- 根据汽车详情唯一标识修改单个对象 -->
+    <update id="updateObj" parameterType="com.itcase.automall.entity.Detail">
+        UPDATE detail SET
+            <include refid="editSql"/>
+        WHERE
+            id = #{id}
+    </update>
+
+    <!-- 据汽车详情唯一标识查询全部用信息 -->
+    <select id="findAllObj" resultType="com.itcase.automall.entity.Detail">
+        SELECT * FROM detail
+    </select>
+
+    <!-- 根据汽车详情唯一标识查询单个汽车详情的全部信息-->
+    <select id="findById" parameterType="LONG" resultType="com.itcase.automall.entity.Detail">
+        SELECT * FROM detail WHERE id = #{id}
+    </select>
+
+
+    <!-- 联合查询汽车的详细信息 -->
+    <resultMap type="com.itcase.automall.entity.Detail" id="CarAllInfoMap">
+        <id column="id" property="id"/>
+        <result column="color" property="color"/>
+        <result column="variable_speed" property="variableSpeed"/>
+        <result column="payload" property="payload"/>
+        <result column="axle_base" property="axleBase"/>
+        <result column="torque" property="torque"/>
+        <result column="weight" property="weight"/>
+        <result column="engine" property="engine"/>
+        <result column="dynamical_system" property="dynamicalSystem"/>
+        <result column="displacement" property="displacement"/>
+        <result column="cylinder_number" property="cylinderNumber"/>
+        <result column="drive_mode" property="driveMode"/>
+        <result column="descriptive" property="descriptive"/>
+        <result column="car_detail_id" property="carDetailId"/>
+        <association property="carDetail" javaType="com.itcase.automall.entity.Car"
+                     resultMap="carDetailMap"/>
+    </resultMap>
+    <resultMap id="carDetailMap" type="com.itcase.automall.entity.Car">
+        <id column="id" property="id"/>
+        <result column="car_name" property="carName"/>
+        <result column="price" property="price"/>
+        <result column="car_number" property="carNumber"/>
+        <result column="thumb_img" property="thumbImg"/>
+        <result column="selling" property="selling"/>
+        <result column="shelves_time" property="shelvesTime"/>
+        <result column="category_car_id" property="categoryCarId"/>
+        <association column="category_car_id" property="categoryCar"
+                     javaType="com.itcase.automall.entity.Category"
+                     select="com.itcase.automall.dao.inter.ICategoryDao.findById"/>
+    </resultMap>
+    <!-- 根据汽车详情id联合查询汽车的详细信息 -->
+    <select id="findByIdCarAllInfo" parameterType="LONG" resultMap="CarAllInfoMap">
+        SELECT * FROM
+            detail
+        INNER JOIN
+            car
+        ON
+            detail.car_detail_id = car.id
+        INNER JOIN
+            category
+        ON
+            car.category_car_id = category.id
+        WHERE
+            detail.car_detail_id = #{id}
+    </select>
+</mapper>
