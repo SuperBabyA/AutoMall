@@ -27,12 +27,12 @@ public class MD5Util {
         return dbPass;
     }
 
-    //编写主类进行测试
-    public static void main(String args[]) {
-        String s = "123456";
-        System.out.println("原始：" + s);
-
-        System.out.println("加密后："+MD5Util.inputPassToFormPass(s));
-
-    }
+//    //编写主类进行测试
+//    public static void main(String args[]) {
+//        String s = "234567";
+//        System.out.println("原始：" + s);
+//
+//        System.out.println("加密后："+MD5Util.inputPassToFormPass(s));
+//
+//    }
 }

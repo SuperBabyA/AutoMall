@@ -52,13 +52,13 @@ public class UserControllerImpl extends AbsSuperController implements IUserContr
     }
 
     //用户登录
-    @GetMapping("/login_user/{telephone}/{password}")
-    public String UserLogin(@PathVariable String telephone,
+    @GetMapping("/login_user/{email}/{password}")
+    public String UserLogin(@PathVariable String email,
                             @PathVariable String password) throws IOException {
         Map<String, Object> cons = new HashMap<>();
-        cons.put("telephone",telephone);
+        cons.put("email",email);
         cons.put("password", MD5Util.inputPassToFormPass(password));
-        HttpResult httpResult = ((UserServiceImpl)getBll()).findByAccount(cons);
+        HttpResult httpResult = ((UserServiceImpl)getBll()).findByEmail(cons);
         return new ObjectMapper().writeValueAsString(httpResult);
     }
 

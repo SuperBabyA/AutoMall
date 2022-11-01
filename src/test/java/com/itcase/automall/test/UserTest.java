@@ -113,7 +113,7 @@ public class UserTest {
         cons.put("account",1111111111l);
         cons.put("password","111111");
         cons.put("isAdmin",1);
-        AbsSuperObject user = dao.findByAccount(cons);
+        AbsSuperObject user = dao.findByEmail(cons);
         System.out.println(user);
     }
 
@@ -202,7 +202,7 @@ public class UserTest {
         cons.put("account",1111111111l);
         cons.put("password","111111");
         cons.put("isAdmin",0);
-        HttpResult httpResult = bll.findByAccount(cons);
+        HttpResult httpResult = bll.findByEmail(cons);
         System.out.println(httpResult.getMessage());
         System.out.println(httpResult.getObject());
     }

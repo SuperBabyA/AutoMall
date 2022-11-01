@@ -33,7 +33,7 @@ public class UserServiceImpl extends AbsSuperService implements IUserService {
     }
 
     //根据account查询对象
-    public HttpResult findByAccount(Map<String, Object> cons) {
+    public HttpResult findByEmail(Map<String, Object> cons) {
         HttpResult httpResult = new HttpResult();
         if (cons == null ||
                 cons.size() == 0 ||
@@ -50,7 +50,7 @@ public class UserServiceImpl extends AbsSuperService implements IUserService {
             httpResult.setObject(-1);
             return httpResult;
         }
-        AbsSuperObject object = getDao().findByAccount(cons);      //调用dao接口方法
+        AbsSuperObject object = getDao().findByEmail(cons);      //调用dao接口方法
         if (object == null) {
             httpResult.setCode("D0003");
             httpResult.setMessage("暂无相应数据！");

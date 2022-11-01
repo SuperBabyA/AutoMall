@@ -12,5 +12,5 @@ import java.util.Map;
 public interface IUserDao extends IDoData{
 
     //用户登录使用
-    AbsSuperObject findByAccount(@Param("cons") Map<String, Object> cons);
+    AbsSuperObject findByEmail(@Param("cons") Map<String, Object> cons);
 }

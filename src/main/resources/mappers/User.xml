@@ -220,15 +220,15 @@
 
     <sql id="loginSql">
         <where>
-                <if test="cons.telephone != null and cons.telephone != ''">
-                    AND telephone = #{cons.telephone}
+                <if test="cons.email != null and cons.email != ''">
+                    AND email = #{cons.email}
                 </if>
                 <if test="cons.password != null and cons.password != ''">
                     AND password = #{cons.password}
                 </if>
         </where>
     </sql>
-    <select id="findByAccount" parameterType="java.util.Map" resultType="com.itcase.automall.entity.User">
+    <select id="findByEmail" parameterType="java.util.Map" resultType="com.itcase.automall.entity.User">
         SELECT * FROM `user`
             <include refid="loginSql"/>
     </select>
