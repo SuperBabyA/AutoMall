@@ -6,6 +6,7 @@ import com.itcase.automall.dao.inter.IUserDao;
 import com.itcase.automall.entity.AbsSuperObject;
 import com.itcase.automall.entity.User;
 import com.itcase.automall.utils.HttpResult;
+import com.itcase.automall.utils.encryption.MD5Util;
 import com.itcase.automall.utils.snowflake.IdGeneratorSnowflake;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -212,4 +213,5 @@ public class UserTest {
         HttpResult httpResult = bll.findByPage(cons, 1, 4);
         System.out.println(httpResult);
     }
+
 }

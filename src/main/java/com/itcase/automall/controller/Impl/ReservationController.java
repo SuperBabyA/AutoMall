@@ -31,6 +31,7 @@ public class ReservationController extends AbsSuperController implements IReserv
         return bll;
     }
 
+    //保存预约
     @PostMapping("/save_reservation")
     public String saveReservation(@RequestBody String resString) throws IOException{
         Reservation res = new ObjectMapper().readValue(resString, Reservation.class);
@@ -40,6 +41,7 @@ public class ReservationController extends AbsSuperController implements IReserv
         return new ObjectMapper().writeValueAsString(httpResult);
     }
 
+    //删除预约
     @DeleteMapping("/delete_reservation/{id}")
     public String delReservation(@PathVariable("id") Long id) throws IOException {
         reservation.setId(id);
@@ -48,6 +50,7 @@ public class ReservationController extends AbsSuperController implements IReserv
         return new ObjectMapper().writeValueAsString(httpResult);
     }
 
+    //分页条件查询
     @GetMapping("/find_reservation/{pageNumber}/{rowsCount}/{dispose}")
     public String findReservation(@PathVariable("pageNumber") Integer pageNumber,
                                   @PathVariable("rowsCount") Integer rowsCount,
@@ -55,14 +58,17 @@ public class ReservationController extends AbsSuperController implements IReserv
         Map<String, Object> cons = new HashMap<>();
         if (!"null".equals(dispose) && dispose != null &&
                 !"".equals(dispose))
-            cons.put("state",dispose);
+            cons.put("dispose",dispose);
         HttpResult httpResult = getBll().findByPage(cons, pageNumber, rowsCount);
         return new ObjectMapper().writeValueAsString(httpResult);
     }
 
+    //修改预约
     @PutMapping("/edit_reservation")
     public String editReservation(@RequestBody String resString) throws IOException {
         Reservation res = new ObjectMapper().readValue(resString, Reservation.class);
-        return null;
+        getBll().setModel(res);
+        HttpResult httpResult = getBll().update();
+        return new ObjectMapper().writeValueAsString(httpResult);
     }
 }

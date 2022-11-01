@@ -149,7 +149,7 @@
     <!-- 显示查询总数 -->
     <select id="getRowsCount" parameterType="java.util.Map" resultType="java.lang.Integer">
         SELECT count(*) total FROM reservation
-        <include refid="selectByPage"/>
+            <include refid="selectByPage"/>
     </select>
 
 </mapper>

@@ -6,6 +6,7 @@ import com.itcase.automall.bll.Impl.UserServiceImpl;
 import com.itcase.automall.controller.inter.IUserController;
 import com.itcase.automall.entity.User;
 import com.itcase.automall.utils.HttpResult;
+import com.itcase.automall.utils.encryption.MD5Util;
 import com.itcase.automall.utils.snowflake.IdGeneratorSnowflake;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -51,9 +52,12 @@ public class UserControllerImpl extends AbsSuperController implements IUserContr
     }
 
     //用户登录
-    @PostMapping("/login_user")
-    public String UserLogin(@RequestBody String userString) throws IOException {
-        Map<String, Object> cons = new ObjectMapper().readValue(userString, Map.class);
+    @GetMapping("/login_user/{telephone}/{password}")
+    public String UserLogin(@PathVariable String telephone,
+                            @PathVariable String password) throws IOException {
+        Map<String, Object> cons = new HashMap<>();
+        cons.put("telephone",telephone);
+        cons.put("password", MD5Util.inputPassToFormPass(password));
         HttpResult httpResult = ((UserServiceImpl)getBll()).findByAccount(cons);
         return new ObjectMapper().writeValueAsString(httpResult);
     }
@@ -62,6 +66,7 @@ public class UserControllerImpl extends AbsSuperController implements IUserContr
     @PutMapping("/edit_user")
     public String editUser(@RequestBody String userString) throws IOException {
         User iUser = new ObjectMapper().readValue(userString, User.class);
+        iUser.setPassword(MD5Util.inputPassToFormPass(iUser.getPassword()));
         getBll().setModel(iUser);
         HttpResult httpResult = getBll().update();
         return new ObjectMapper().writeValueAsString(httpResult);
@@ -72,6 +77,7 @@ public class UserControllerImpl extends AbsSuperController implements IUserContr
     public String addUser(@RequestBody String userString) throws IOException {
         User iUser = new ObjectMapper().readValue(userString, User.class);
         iUser.setId(new IdGeneratorSnowflake().snowflakeId());
+        iUser.setPassword(MD5Util.inputPassToFormPass(iUser.getPassword()));
         getBll().setModel(iUser);
         HttpResult httpResult = getBll().save();
         return new ObjectMapper().writeValueAsString(httpResult);
