@@ -223,7 +223,9 @@
     </sql>
     <!-- 分页查询 -->
     <select id="findByPage" parameterType="java.util.Map" resultMap="pageMap">
-        SELECT * FROM `user`
+        SELECT
+            <include refid="columnPage"/>
+        FROM `user`
             <include refid="selectByPage"/>
         LIMIT #{start},#{rowsCount}
     </select>
