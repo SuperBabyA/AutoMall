@@ -153,7 +153,7 @@
     <resultMap id="userMap" type="com.itcase.automall.entity.User">
         <id column="id" property="id"/>
         <result column="account_name" property="accountName"/>
-        <result column="account" property="account"/>
+        <result column="email" property="email"/>
         <result column="password" property="password"/>
         <result column="head_portrait" property="headPortrait"/>
         <result column="user_name" property="userName"/>

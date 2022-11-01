@@ -13,8 +13,8 @@
             <if test="accountName != null">
                 account_name,
             </if>
-            <if test="account != null">
-                account,
+            <if test="email != null">
+                email,
             </if>
             <if test="password != null">
                 password,
@@ -55,8 +55,8 @@
             <if test="accountName != null">
                 #{accountName},
             </if>
-            <if test="account != null">
-                #{account},
+            <if test="email != null">
+                #{email},
             </if>
             <if test="password != null">
                 #{password},
@@ -94,8 +94,8 @@
             <if test="accountName != null">
                 account_name = #{accountName},
             </if>
-            <if test="account != null">
-                account = #{account},
+            <if test="email != null">
+                email = #{email},
             </if>
             <if test="password != null">
                 password = #{password},
@@ -158,21 +158,6 @@
         SELECT * FROM `user` WHERE id = #{id}
     </select>
 
-    <!--    <select id="selectIsOrder" parameterType="LONG" resultType="java.lang.Integer">
-        SELECT count(*) FROM
-            orders
-        WHERE
-            address_order_id
-        IN (SELECT address.id FROM
-                `user`
-            INNER JOIN
-                address
-            ON
-                `user`.id = address.user_address_id
-            WHERE
-                `user`.id = #{id})
-    </select>-->
-
     <!-- 根据用户唯一标识修改单个对象 -->
     <update id="updateObj" parameterType="com.itcase.automall.entity.User">
         UPDATE `user` SET
@@ -207,6 +192,34 @@
                 AND account_name LIKE concat('%',#{cons.accountName},'%')
             </if>
         </where>
+    </sql>
+    <sql id="columnPage">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="accountName != null">
+                account_name,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="headPortrait != null">
+                head_portrait,
+            </if>
+            <if test="userName != null">
+                user_name,
+            </if>
+            <if test="sex != null">
+                sex,
+            </if>
+            <if test="telephone != null">
+                telephone,
+            </if>
+            <if test="birthday != null">
+                birthday,
+            </if>
+        </trim>
     </sql>
     <!-- 分页查询 -->
     <select id="findByPage" parameterType="java.util.Map" resultMap="pageMap">

@@ -19,7 +19,7 @@ public class User extends AbsSuperObject implements Serializable {
     //账号昵称
     private String accountName;
     //账号
-    private Long account;
+    private String email;
     //密码
     private String password;
     //账号头像
