@@ -46,7 +46,7 @@ public class UserTest {
     @Test
     public void testUserAdd() {
         user.setId(13241324L);
-        user.setAccount(1234l);
+        user.setEmail("1234l");
         user.setAccountName("测试人员3");
         user.setBirthday(new Date());
         user.setIdCard(564352688394819832l);
@@ -78,7 +78,7 @@ public class UserTest {
     @Test
     public void testUserUpdateObj() {
         user.setId(13241324l);
-        user.setAccount(23463452l);
+        user.setEmail("23463452l");
         user.setAccountName("测试修改4");
         user.setBirthday(new Date());
         user.setIdCard(564352688394819832l);
@@ -126,7 +126,7 @@ public class UserTest {
     public void testSaveObj() {
         user.setId(12341234l);
         user.setAccountName("业务逻辑层测试1");
-        user.setAccount(2345345l);
+        user.setEmail("2345345l");
         user.setPassword("12341234");
         user.setUserName("业务逻辑层测试1");
         user.setSex("男");
@@ -165,7 +165,7 @@ public class UserTest {
     public void testUpdate() {
         user.setId(12341234l);
         user.setAccountName("业务逻辑层update测试1");
-        user.setAccount(234566l);
+        user.setEmail("234566l");
         user.setPassword("12341234");
         user.setUserName("业务逻辑层update测试1");
         user.setSex("男");

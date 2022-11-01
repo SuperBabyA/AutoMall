@@ -194,32 +194,14 @@
         </where>
     </sql>
     <sql id="columnPage">
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">
                 id,
-            </if>
-            <if test="accountName != null">
                 account_name,
-            </if>
-            <if test="email != null">
                 email,
-            </if>
-            <if test="headPortrait != null">
                 head_portrait,
-            </if>
-            <if test="userName != null">
                 user_name,
-            </if>
-            <if test="sex != null">
                 sex,
-            </if>
-            <if test="telephone != null">
                 telephone,
-            </if>
-            <if test="birthday != null">
-                birthday,
-            </if>
-        </trim>
+                birthday
     </sql>
     <!-- 分页查询 -->
     <select id="findByPage" parameterType="java.util.Map" resultMap="pageMap">

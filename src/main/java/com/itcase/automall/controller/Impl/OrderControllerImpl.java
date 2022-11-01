@@ -40,7 +40,7 @@ public class OrderControllerImpl  extends AbsSuperController implements IOrderCo
     }
 
     //分页多条件查询订单
-    @GetMapping("/find_order/{pageNumber}/{rowsCount}/{userAddressId}/{state}")
+    @GetMapping("/find_by_page_order/{pageNumber}/{rowsCount}/{userAddressId}/{state}")
     public String findUserOrder(@PathVariable("pageNumber") Integer pageNumber,
                                 @PathVariable("rowsCount") Integer rowsCount,
                                 @PathVariable("userAddressId") Long userAddressId,

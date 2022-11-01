@@ -203,6 +203,26 @@
         <result column="brand" property="brand"/>
     </resultMap>
 
+    <sql id="columnPage">
+        orders.id,
+        order_number,
+        trading_hour,
+        money,
+        state,
+        address.id,
+        province,
+        city,
+        district,
+        particular,
+        detail.id,
+        car.id,
+        car_name,
+        thumb_img,
+        category.id,
+        genre,
+        series,
+        brand
+    </sql>
     <sql id="userOrdersSql">
         <where>
             <if test="cons.userAddressId != null and cons.userAddressId != ''">
@@ -215,7 +235,9 @@
         ORDER BY trading_hour DESC
     </sql>
     <select id="findByPage" parameterType="java.util.Map" resultMap="ordersAllInfoMap">
-        SELECT * FROM
+        SELECT
+            <include refid="columnPage"/>
+        FROM
             orders
         INNER JOIN
             address
