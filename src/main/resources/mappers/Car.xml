@@ -158,6 +158,9 @@
             <if test="cons.genre != null and cons.genre != ''">
                 AND category.genre = #{cons.genre}
             </if>
+            <if test="cons.brand != null and cons.brand != ''">
+                AND category.brand = #{cons.brand}
+            </if>
             <if test="cons == null">
                 AND category.id IS NOT NULL
             </if>

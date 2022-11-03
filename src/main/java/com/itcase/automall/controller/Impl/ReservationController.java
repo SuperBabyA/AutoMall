@@ -56,7 +56,7 @@ public class ReservationController extends AbsSuperController implements IReserv
                                   @PathVariable("rowsCount") Integer rowsCount,
                                   @PathVariable("dispose") String dispose) throws IOException {
         Map<String, Object> cons = new HashMap<>();
-        if (!"null".equals(dispose) && dispose != null &&
+        if (!"-1".equals(dispose) && dispose != null &&
                 !"".equals(dispose))
             cons.put("dispose",dispose);
         HttpResult httpResult = getBll().findByPage(cons, pageNumber, rowsCount);

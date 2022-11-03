@@ -92,7 +92,7 @@ public class UserControllerImpl extends AbsSuperController implements IUserContr
         HashMap<String, Object> cons = new HashMap<>();
         if (telephone != null && telephone != -1)
             cons.put("telephone", telephone);
-        if (!"null".equals(accountName) && accountName != null &&
+        if (!"-1".equals(accountName) && accountName != null &&
                 !"".equals(accountName))
             cons.put("accountName",accountName);
         HttpResult httpResult = getBll().findByPage(cons, pageNumber, rowsCount);

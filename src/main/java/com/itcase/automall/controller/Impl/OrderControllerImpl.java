@@ -48,7 +48,7 @@ public class OrderControllerImpl  extends AbsSuperController implements IOrderCo
         HashMap<String, Object> cons = new HashMap<>();
         if (userAddressId != null && userAddressId != -1)
             cons.put("userAddressId", userAddressId);
-        if (!"null".equals(state) && state != null &&
+        if (!"-1".equals(state) && state != null &&
                 !"".equals(state))
             cons.put("state",state);
         HttpResult httpResult = getBll().findByPage(cons, pageNumber, rowsCount);

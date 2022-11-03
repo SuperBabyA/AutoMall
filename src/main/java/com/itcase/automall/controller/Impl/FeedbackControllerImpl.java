@@ -45,7 +45,7 @@ public class FeedbackControllerImpl extends AbsSuperController implements IFeedb
                              @PathVariable("rowsCount") Integer rowsCount,
                              @PathVariable("dispose") String dispose) throws IOException {
         HashMap<String, Object> cons = new HashMap<>();
-        if (!"null".equals(dispose) && dispose != null &&
+        if (!"-1".equals(dispose) && dispose != null &&
                 !"".equals(dispose))
             cons.put("dispose",dispose);
         HttpResult httpResult = getBll().findByPage(cons, pageNumber, rowsCount);

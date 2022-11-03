@@ -92,4 +92,11 @@ public class CarTest {
         HttpResult httpResult = bll.findByPage(cons, 1, 5);
         System.out.println(httpResult);
     }
+
+    @Test
+    public void testClassCase() {
+        String temp = "SUV";
+        Integer result = Integer.valueOf(temp);
+        System.out.println(result);
+    }
 }

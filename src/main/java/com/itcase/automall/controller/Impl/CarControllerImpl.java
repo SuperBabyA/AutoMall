@@ -42,24 +42,26 @@ public class CarControllerImpl extends AbsSuperController implements ICarControl
     }
 
     //多条件分页查询汽车及类型
-    @GetMapping("/find_by_page_car/{pageNumber}/{rowsCount}/{minPrice}/{maxPrice}/{shelvesTime}/{genre}")
+    @GetMapping("/find_by_page_car/{pageNumber}/{rowsCount}/{minPrice}/{maxPrice}/{shelvesTime}/{genre}/{brand}")
     public String findByPage(@PathVariable("pageNumber") Integer pageNumber,
                              @PathVariable("rowsCount") Integer rowsCount,
                              @PathVariable("minPrice") Float minPrice,
                              @PathVariable("maxPrice") Float maxPrice,
                              @PathVariable("shelvesTime") String shelvesTime,
-                             @PathVariable("genre") String genre) throws IOException, ParseException {
+                             @PathVariable("genre") String genre,
+                             @PathVariable("brand") String brand) throws IOException, ParseException {
+        System.out.println("数据类型为："+shelvesTime.getClass().getSimpleName()+",值为："+shelvesTime);
         HashMap<String, Object> cons = new HashMap<>();
         if (minPrice != null && minPrice != -1)
             cons.put("minPrice", minPrice);
         if (maxPrice != null && maxPrice != -1)
             cons.put("maxPrice", maxPrice);
-        if (!"null".equals(shelvesTime) && shelvesTime != null &&
-                !"".equals(shelvesTime))
+        if (!"-1".equals(shelvesTime) && shelvesTime != null)
             cons.put("shelvesTime",new SimpleDateFormat("yyyy-MM-dd").parse(shelvesTime));
-        if (!"null".equals(genre) && genre != null &&
-                !"".equals(genre))
+        if (!"-1".equals(genre) && genre != null)
             cons.put("genre",genre);
+        if (!"-1".equals(brand) && brand != null)
+            cons.put("brand",brand);
         HttpResult httpResult = getBll().findByPage(cons, pageNumber, rowsCount);
         return new ObjectMapper().writeValueAsString(httpResult);
     }
