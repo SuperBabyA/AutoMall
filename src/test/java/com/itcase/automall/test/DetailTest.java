@@ -2,7 +2,6 @@ package com.itcase.automall.test;
 
 import com.itcase.automall.AutomallApplication;
 import com.itcase.automall.bll.Impl.DetailServiceImpl;
-import com.itcase.automall.bll.inter.IDetailService;
 import com.itcase.automall.dao.inter.IDetailDao;
 import com.itcase.automall.entity.AbsSuperObject;
 import com.itcase.automall.entity.Detail;
@@ -15,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -119,7 +117,7 @@ public class DetailTest {
         bll.setModel(detail);
         HttpResult httpResult = bll.findByIdCarAllInfo();
         System.out.println(httpResult.getMessage());
-        System.out.println(httpResult.getObject());
+        System.out.println(httpResult.getData());
         System.out.println(httpResult.getCode());
     }
 
@@ -143,7 +141,7 @@ public class DetailTest {
         HttpResult httpResult = bll.save();
         System.out.println(httpResult.getMessage());
         System.out.println(httpResult.getCode());
-        System.out.println(httpResult.getObject());
+        System.out.println(httpResult.getData());
     }
 
 

@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/car")
 public class CarControllerImpl extends AbsSuperController implements ICarController {
@@ -87,8 +88,9 @@ public class CarControllerImpl extends AbsSuperController implements ICarControl
 
     //批量删除汽车信息
     @PostMapping("/batch_del_car")
-    public String batchDel(@RequestBody List<Long> ids) throws IOException {
-        HttpResult httpResult = getBll().batchDel(ids);
-        return new ObjectMapper().writeValueAsString(httpResult);
+    public String batchDel(@RequestBody List<Integer> ids) throws IOException {
+//        HttpResult httpResult = getBll().batchDel(ids);
+//        return new ObjectMapper().writeValueAsString(httpResult);
+        return null;
     }
 }

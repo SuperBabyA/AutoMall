@@ -7,9 +7,12 @@ import com.itcase.automall.controller.inter.IUserController;
 import com.itcase.automall.entity.User;
 import com.itcase.automall.utils.HttpResult;
 import com.itcase.automall.utils.encryption.MD5Util;
+import com.itcase.automall.utils.mail.MailService;
+import com.itcase.automall.utils.redisUtils.RedisUtil;
 import com.itcase.automall.utils.snowflake.IdGeneratorSnowflake;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -18,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin
 @RestController
 @RequestMapping("api/user")
 public class UserControllerImpl extends AbsSuperController implements IUserController {
@@ -29,9 +33,40 @@ public class UserControllerImpl extends AbsSuperController implements IUserContr
     @Qualifier("userServiceImpl")
     private AbsSuperService userService;
 
+    @Autowired
+    private RedisUtil redisUtil ;
+
+    @Autowired
+    private MailService mailService ;
+
     @Override
     public AbsSuperService getBll() {
         return userService;
+    }
+
+    @GetMapping("sendcode/{email}")
+    public HttpResult sendCode(@PathVariable("email") String email) {
+        int code = (int) ((Math.random() * 9 + 1) * 100000);
+        mailService.sendCode(email,"AutoMall 验证码", String.valueOf(code));
+        redisUtil.set(email, String.valueOf(code), 5 * 60);
+        return new HttpResult("200", "发送成功", null);
+    }
+
+    @GetMapping("checkcode/{email}/{code}")
+    public HttpResult checkCode(
+            @PathVariable("email") String email,
+            @PathVariable("code") String code
+    ) {
+        String _code = (String) redisUtil.get(email);
+        if (_code == null || _code == "") {
+            return new HttpResult("401", "验证码错误", null);
+        }
+        if (_code.equals(code)) {
+            redisUtil.del(email);
+            return new HttpResult("200", "验证码正确", null);
+        } else {
+            return new HttpResult("401", "验证码错误", null);
+        }
     }
 
     // 用户注销 / 管理员删除用户

@@ -113,7 +113,7 @@ public class AddressTest {
         bll.setModel(address);
         HttpResult httpResult = bll.findUserAddress();
         System.out.println(httpResult.getMessage());
-        System.out.println(httpResult.getObject());
+        System.out.println(httpResult.getData());
         System.out.println(httpResult.getCode());
     }
 

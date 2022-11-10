@@ -6,8 +6,6 @@ import com.itcase.automall.entity.AbsSuperObject;
 import com.itcase.automall.entity.Address;
 import com.itcase.automall.utils.HttpResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,24 +43,24 @@ public class AddressServiceImpl extends AbsSuperService implements IAddressServi
                 "".equals(model.getUserAddressId())) {
             httpResult.setCode("D0001");
             httpResult.setMessage("对象为空，查询失败！");
-            httpResult.setObject(-1);
+            httpResult.setData(-1);
             return httpResult;
         }
         if (getDao() == null) {
             httpResult.setCode("D0002");
             httpResult.setMessage("未获得访问层对象！");
-            httpResult.setObject(-1);
+            httpResult.setData(-1);
             return httpResult;
         }
         List<AbsSuperObject> objects = getDao().findUserAddress(model.getUserAddressId());
         if (objects == null) {
             httpResult.setCode("D0003");
             httpResult.setMessage("暂无相应数据！");
-            httpResult.setObject(-2);
+            httpResult.setData(-2);
         } else {
             httpResult.setCode("D0000");
             httpResult.setMessage("已查询出对应数据！");
-            httpResult.setObject(objects);
+            httpResult.setData(objects);
         }
         return httpResult;
     }

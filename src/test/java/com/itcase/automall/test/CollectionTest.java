@@ -14,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -93,6 +92,6 @@ public class CollectionTest {
         collection.setUserCollectionId(345709423l);
         bll.setModel(collection);
         HttpResult httpResult = bll.findUserCollection();
-        System.out.println(httpResult.getObject());
+        System.out.println(httpResult.getData());
     }
 }

@@ -43,24 +43,24 @@ public class CollectionServiceImpl extends AbsSuperService implements ICollectio
                 "".equals(model.getUserCollectionId())) {
             httpResult.setCode("D0001");
             httpResult.setMessage("查询条件为空，查询失败！");
-            httpResult.setObject(-1);
+            httpResult.setData(-1);
             return httpResult;
         }
         if (getDao() == null) {
             httpResult.setCode("D0002");
             httpResult.setMessage("未获得访问层对象！");
-            httpResult.setObject(-1);
+            httpResult.setData(-1);
             return httpResult;
         }
         List<AbsSuperObject> objects = getDao().findUserCollection(model.getUserCollectionId());
         if (objects == null) {
             httpResult.setCode("D0003");
             httpResult.setMessage("暂无相应数据！");
-            httpResult.setObject(-2);
+            httpResult.setData(-2);
         } else {
             httpResult.setCode("D0000");
             httpResult.setMessage("已查询出对应数据！");
-            httpResult.setObject(objects);
+            httpResult.setData(objects);
         }
         return httpResult;
     }

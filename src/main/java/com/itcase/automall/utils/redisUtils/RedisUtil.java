@@ -330,6 +330,9 @@ public class RedisUtil {
     public Long delete(String key, String... hashKeys) {
         return redisTemplate.opsForHash().delete(key, hashKeys);
     }
+    public boolean del(String key) {
+        return redisTemplate.delete(key);
+    }
 
     /**
      * 给指定 hash 的 hashkey 做增减操作

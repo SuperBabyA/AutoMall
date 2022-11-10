@@ -13,5 +13,5 @@ public class HttpResult {
     //提示信息
     private String message;
     //返回对象
-    private Object object;
+    private Object data;
 }

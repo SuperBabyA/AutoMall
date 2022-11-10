@@ -6,8 +6,6 @@ import com.itcase.automall.dao.inter.IUserDao;
 import com.itcase.automall.entity.AbsSuperObject;
 import com.itcase.automall.entity.User;
 import com.itcase.automall.utils.HttpResult;
-import com.itcase.automall.utils.encryption.MD5Util;
-import com.itcase.automall.utils.snowflake.IdGeneratorSnowflake;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -150,7 +148,7 @@ public class UserTest {
     @Test
     public void testFindAll() {
         HttpResult httpResult = bll.findAll();
-        System.out.println(httpResult.getObject());
+        System.out.println(httpResult.getData());
     }
 
     @Test
@@ -158,7 +156,7 @@ public class UserTest {
         //user.setId(23452345l);//345709423l
         bll.setModel(user);
         HttpResult httpResult = bll.findById();
-        System.out.println(httpResult.getObject());
+        System.out.println(httpResult.getData());
     }
 
     @Test
@@ -185,7 +183,7 @@ public class UserTest {
         HttpResult httpResult = bll.batchDel(cons);
         System.out.println(httpResult.getCode());
         System.out.println(httpResult.getMessage());
-        System.out.println(httpResult.getObject());
+        System.out.println(httpResult.getData());
     }
 
     @Test
@@ -204,7 +202,7 @@ public class UserTest {
         cons.put("isAdmin",0);
         HttpResult httpResult = bll.findByEmail(cons);
         System.out.println(httpResult.getMessage());
-        System.out.println(httpResult.getObject());
+        System.out.println(httpResult.getData());
     }
 
     @Test

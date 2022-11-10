@@ -107,7 +107,7 @@ public class CategoryTest {
         Map<String, Object> cons = new HashMap<>();
 //        cons.put("genre","SUV");
         HttpResult httpResult = bll.findByPage(cons, 1, 3);
-        System.out.println(httpResult.getObject());
+        System.out.println(httpResult.getData());
         System.out.println(httpResult.getMessage());
     }
 
