@@ -19,7 +19,7 @@ import java.util.UUID;
 @RequestMapping("/common")
 public class CommonController {
 
-  @Value("${reggie.path}")
+  @Value("${automall.basePath}")
   private String basePath;
 
   @PostMapping("/upload")
@@ -40,6 +40,7 @@ public class CommonController {
 
     try {
       // 将文件转存在指定位置
+      log.info("basePath: {}", basePath);
       file.transferTo(new File(basePath + fileName));
     } catch (IOException e) {
       throw new RuntimeException(e);
@@ -49,8 +50,9 @@ public class CommonController {
 
   }
 
-  @GetMapping("/download/{filename}")
+  @GetMapping("/download/{filename:.+}")
   public void download(@PathVariable("filename") String name, HttpServletResponse response) {
+    log.info("filename: {}", name);
     try {
       FileInputStream fileInputStream = new FileInputStream(new File(basePath + name));
 
