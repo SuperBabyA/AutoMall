@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.HashMap;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/category")
 public class CategoryControllerImpl extends AbsSuperController implements ICategoryController {
