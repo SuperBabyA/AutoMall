@@ -29,18 +29,25 @@ public class CategoryControllerImpl extends AbsSuperController implements ICateg
         return categoryService;
     }
 
+    //查询所有汽车类别
+    @GetMapping("/findCategory/all")
+    public HttpResult findAllCategory() throws IOException {
+        HttpResult httpResult = getBll().findAll();
+        return httpResult;
+    }
+
     //根据id删除汽车类别
     @DeleteMapping("/delCategory/{id}")
-    public String delCategory(@PathVariable("id") Long id) throws IOException {
+    public HttpResult delCategory(@PathVariable("id") Long id) throws IOException {
         category.setId(id);
         getBll().setModel(category);
         HttpResult httpResult = getBll().delete();
-        return new ObjectMapper().writeValueAsString(httpResult);
+        return httpResult;
     }
 
     //多条件联合查询汽车及类别
     @GetMapping("/findCategory/{pageNumber}/{rowsCount}/{series}/{genre}")
-    public String findCategory(@PathVariable("pageNumber") Integer pageNumber,
+    public HttpResult findCategory(@PathVariable("pageNumber") Integer pageNumber,
                                @PathVariable("rowsCount") Integer rowsCount,
                                @PathVariable("series") String series,
                                @PathVariable("genre") String genre) throws IOException {
@@ -52,25 +59,25 @@ public class CategoryControllerImpl extends AbsSuperController implements ICateg
                 !"".equals(genre))
             cons.put("genre",genre);
         HttpResult httpResult = getBll().findByPage(cons, pageNumber, rowsCount);
-        return new ObjectMapper().writeValueAsString(httpResult);
+        return httpResult;
     }
 
     //新增汽车类别
     @PostMapping("/saveCategory")
-    public String saveCategory(@RequestBody String categoryStr) throws IOException {
+    public HttpResult saveCategory(@RequestBody String categoryStr) throws IOException {
         Category cate = new ObjectMapper().readValue(categoryStr, Category.class);
         cate.setId(new IdGeneratorSnowflake().snowflakeId());
         getBll().setModel(cate);
         HttpResult httpResult = getBll().save();
-        return new ObjectMapper().writeValueAsString(httpResult);
+        return httpResult;
     }
 
     //修改汽车类别
     @PutMapping("/editCategory")
-    public String editCategory(@RequestBody String categoryStr) throws IOException {
+    public HttpResult editCategory(@RequestBody String categoryStr) throws IOException {
         Category cate = new ObjectMapper().readValue(categoryStr, Category.class);
         getBll().setModel(cate);
         HttpResult httpResult = getBll().update();
-        return new ObjectMapper().writeValueAsString(httpResult);
+        return httpResult;
     }
 }

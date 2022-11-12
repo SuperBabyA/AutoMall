@@ -33,26 +33,26 @@ public class ReservationController extends AbsSuperController implements IReserv
 
     //保存预约
     @PostMapping("/save_reservation")
-    public String saveReservation(@RequestBody String resString) throws IOException{
+    public HttpResult saveReservation(@RequestBody String resString) throws IOException{
         Reservation res = new ObjectMapper().readValue(resString, Reservation.class);
         res.setId(new IdGeneratorSnowflake().snowflakeId());
         getBll().setModel(res);
         HttpResult httpResult = getBll().save();
-        return new ObjectMapper().writeValueAsString(httpResult);
+        return httpResult;
     }
 
     //删除预约
     @DeleteMapping("/delete_reservation/{id}")
-    public String delReservation(@PathVariable("id") Long id) throws IOException {
+    public HttpResult delReservation(@PathVariable("id") Long id) throws IOException {
         reservation.setId(id);
         getBll().setModel(reservation);
         HttpResult httpResult = getBll().delete();
-        return new ObjectMapper().writeValueAsString(httpResult);
+        return httpResult;
     }
 
     //分页条件查询
     @GetMapping("/find_reservation/{pageNumber}/{rowsCount}/{dispose}")
-    public String findReservation(@PathVariable("pageNumber") Integer pageNumber,
+    public HttpResult findReservation(@PathVariable("pageNumber") Integer pageNumber,
                                   @PathVariable("rowsCount") Integer rowsCount,
                                   @PathVariable("dispose") String dispose) throws IOException {
         Map<String, Object> cons = new HashMap<>();
@@ -60,15 +60,15 @@ public class ReservationController extends AbsSuperController implements IReserv
                 !"".equals(dispose))
             cons.put("dispose",dispose);
         HttpResult httpResult = getBll().findByPage(cons, pageNumber, rowsCount);
-        return new ObjectMapper().writeValueAsString(httpResult);
+        return httpResult;
     }
 
     //修改预约
     @PutMapping("/edit_reservation")
-    public String editReservation(@RequestBody String resString) throws IOException {
+    public HttpResult editReservation(@RequestBody String resString) throws IOException {
         Reservation res = new ObjectMapper().readValue(resString, Reservation.class);
         getBll().setModel(res);
         HttpResult httpResult = getBll().update();
-        return new ObjectMapper().writeValueAsString(httpResult);
+        return httpResult;
     }
 }

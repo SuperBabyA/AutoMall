@@ -71,56 +71,56 @@ public class UserControllerImpl extends AbsSuperController implements IUserContr
 
     // 用户注销 / 管理员删除用户
     @DeleteMapping("/delete_user/{id}")
-    public String delUser(@PathVariable("id") Long id) throws IOException {
+    public HttpResult delUser(@PathVariable("id") Long id) throws IOException {
         user.setId(id);
         getBll().setModel(user);
         HttpResult httpResult = getBll().delete();
-        return new ObjectMapper().writeValueAsString(httpResult);
+        return httpResult;
     }
 
     //批量删除用户
     @PostMapping("/batch_del_user")
-    public String batchDelUsers(@RequestBody List<Long> ids) throws IOException {
+    public HttpResult batchDelUsers(@RequestBody List<Long> ids) throws IOException {
         System.out.println("@@@"+ids);
         HttpResult httpResult = getBll().batchDel(ids);
-        return new ObjectMapper().writeValueAsString(httpResult);
+        return httpResult;
     }
 
     //用户登录
     @GetMapping("/login_user/{email}/{password}")
-    public String UserLogin(@PathVariable String email,
+    public HttpResult UserLogin(@PathVariable String email,
                             @PathVariable String password) throws IOException {
         Map<String, Object> cons = new HashMap<>();
         cons.put("email",email);
         cons.put("password", MD5Util.inputPassToFormPass(password));
         HttpResult httpResult = ((UserServiceImpl)getBll()).findByEmail(cons);
-        return new ObjectMapper().writeValueAsString(httpResult);
+        return httpResult;
     }
 
     //修改用户信息
     @PutMapping("/edit_user")
-    public String editUser(@RequestBody String userString) throws IOException {
+    public HttpResult editUser(@RequestBody String userString) throws IOException {
         User iUser = new ObjectMapper().readValue(userString, User.class);
         iUser.setPassword(MD5Util.inputPassToFormPass(iUser.getPassword()));
         getBll().setModel(iUser);
         HttpResult httpResult = getBll().update();
-        return new ObjectMapper().writeValueAsString(httpResult);
+        return httpResult;
     }
 
     //新用户注册
     @PostMapping("/save_user")
-    public String addUser(@RequestBody String userString) throws IOException {
+    public HttpResult addUser(@RequestBody String userString) throws IOException {
         User iUser = new ObjectMapper().readValue(userString, User.class);
         iUser.setId(new IdGeneratorSnowflake().snowflakeId());
         iUser.setPassword(MD5Util.inputPassToFormPass(iUser.getPassword()));
         getBll().setModel(iUser);
         HttpResult httpResult = getBll().save();
-        return new ObjectMapper().writeValueAsString(httpResult);
+        return httpResult;
     }
 
     //分页查询用户
     @GetMapping("/find_by_page_user/{pageNumber}/{rowsCount}/{telephone}/{accountName}")
-    public String findByPage(@PathVariable("pageNumber") Integer pageNumber,
+    public HttpResult findByPage(@PathVariable("pageNumber") Integer pageNumber,
                               @PathVariable("rowsCount") Integer rowsCount,
                               @PathVariable("telephone") Long telephone,
                               @PathVariable("accountName") String accountName) throws IOException {
@@ -131,15 +131,15 @@ public class UserControllerImpl extends AbsSuperController implements IUserContr
                 !"".equals(accountName))
             cons.put("accountName",accountName);
         HttpResult httpResult = getBll().findByPage(cons, pageNumber, rowsCount);
-        return new ObjectMapper().writeValueAsString(httpResult);
+        return httpResult;
     }
 
     //查询用户信息
     @GetMapping("/find_user/{id}")
-    public String findUser(@PathVariable("id") Long id)  throws IOException {
+    public HttpResult findUser(@PathVariable("id") Long id)  throws IOException {
         user.setId(id);
         getBll().setModel(user);
         HttpResult httpResult = getBll().findById();
-        return new ObjectMapper().writeValueAsString(httpResult);
+        return httpResult;
     }
 }

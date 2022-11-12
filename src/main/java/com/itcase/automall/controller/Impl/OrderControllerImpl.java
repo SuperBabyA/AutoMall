@@ -32,16 +32,16 @@ public class OrderControllerImpl  extends AbsSuperController implements IOrderCo
 
     //删除订单
     @DeleteMapping("/delete_order/{id}")
-    public String delOrder(@PathVariable("id") Long id) throws IOException {
+    public HttpResult delOrder(@PathVariable("id") Long id) throws IOException {
         orders.setId(id);
         getBll().setModel(orders);
         HttpResult httpResult = getBll().delete();
-        return new ObjectMapper().writeValueAsString(httpResult);
+        return httpResult;
     }
 
     //分页多条件查询订单
     @GetMapping("/find_by_page_order/{pageNumber}/{rowsCount}/{userAddressId}/{state}")
-    public String findUserOrder(@PathVariable("pageNumber") Integer pageNumber,
+    public HttpResult findUserOrder(@PathVariable("pageNumber") Integer pageNumber,
                                 @PathVariable("rowsCount") Integer rowsCount,
                                 @PathVariable("userAddressId") Long userAddressId,
                                 @PathVariable("state") String state) throws IOException {
@@ -52,27 +52,27 @@ public class OrderControllerImpl  extends AbsSuperController implements IOrderCo
                 !"".equals(state))
             cons.put("state",state);
         HttpResult httpResult = getBll().findByPage(cons, pageNumber, rowsCount);
-        return new ObjectMapper().writeValueAsString(httpResult);
+        return httpResult;
     }
 
     //新增订单
     @PostMapping("/save_order")
-    public String saveOrder(@RequestBody String orderString) throws IOException {
+    public HttpResult saveOrder(@RequestBody String orderString) throws IOException {
         Orders order = new ObjectMapper().readValue(orderString, Orders.class);
         order.setId(new IdGeneratorSnowflake().snowflakeId());
         order.setOrderNumber(new Date().getTime());
         System.out.println(order);
         getBll().setModel(order);
         HttpResult httpResult = getBll().save();
-        return new ObjectMapper().writeValueAsString(httpResult);
+        return httpResult;
     }
 
     //修改订单
     @PutMapping("/edit_order")
-    public String editOrder(@RequestBody String orderString) throws IOException {
+    public HttpResult editOrder(@RequestBody String orderString) throws IOException {
         Orders order = new ObjectMapper().readValue(orderString, Orders.class);
         getBll().setModel(order);
         HttpResult httpResult = getBll().update();
-        return new ObjectMapper().writeValueAsString(httpResult);
+        return httpResult;
     }
 }

@@ -36,40 +36,40 @@ public class AddressControllerImpl extends AbsSuperController implements IAddres
 
     //查询单个用户的全部地址
     @GetMapping("/user_addr/{id}")
-    public String findUserAllAddr(@PathVariable("id") Long id) throws IOException {
+    public HttpResult findUserAllAddr(@PathVariable("id") Long id) throws IOException {
         address.setUserAddressId(id);
         addressService.setModel(address);
         HttpResult httpResult = addressService.findUserAddress();
-        return new ObjectMapper().writeValueAsString(httpResult);
+        return httpResult;
     }
 
     //修改单个用户的地址
     @PutMapping("/modify_addr")
-    public String modifyUserAddress(@RequestBody String addrString) throws IOException {
+    public HttpResult modifyUserAddress(@RequestBody String addrString) throws IOException {
         System.out.println(addrString);
         Address addr = new ObjectMapper().readValue(addrString, Address.class);
         System.out.println(addr);
         getBll().setModel(addr);
         HttpResult httpResult = getBll().update();
-        return new ObjectMapper().writeValueAsString(httpResult);
+        return httpResult;
     }
 
     //新增用户地址
     @PostMapping("/save_addr")
-    public String saveAddr(@RequestBody String addrString) throws IOException {
+    public HttpResult saveAddr(@RequestBody String addrString) throws IOException {
         Address addr = new ObjectMapper().readValue(addrString, Address.class);
         addr.setId(new IdGeneratorSnowflake().snowflakeId());
         getBll().setModel(addr);
         HttpResult httpResult = getBll().save();
-        return new ObjectMapper().writeValueAsString(httpResult);
+        return httpResult;
     }
 
     //根据地址id删除用户地址
     @DeleteMapping("/delete_addr/{id}")
-    public String delAddr(@PathVariable("id")Long id) throws IOException {
+    public HttpResult delAddr(@PathVariable("id")Long id) throws IOException {
         address.setId(id);
         getBll().setModel(address);
         HttpResult httpResult = getBll().delete();
-        return new ObjectMapper().writeValueAsString(httpResult);
+        return httpResult;
     }
 }

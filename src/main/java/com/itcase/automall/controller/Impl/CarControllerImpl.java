@@ -35,16 +35,16 @@ public class CarControllerImpl extends AbsSuperController implements ICarControl
 
     //根据id删除汽车对象
     @DeleteMapping("/delete_car/{id}")
-    public String deleteCar(@PathVariable Long id) throws IOException {
+    public HttpResult deleteCar(@PathVariable Long id) throws IOException {
         car.setId(id);
         getBll().setModel(car);
         HttpResult httpResult = getBll().delete();
-        return new ObjectMapper().writeValueAsString(httpResult);
+        return httpResult;
     }
 
     //多条件分页查询汽车及类型
     @GetMapping("/find_by_page_car/{pageNumber}/{rowsCount}/{minPrice}/{maxPrice}/{shelvesTime}/{genre}/{brand}")
-    public String findByPage(@PathVariable("pageNumber") Integer pageNumber,
+    public HttpResult findByPage(@PathVariable("pageNumber") Integer pageNumber,
                              @PathVariable("rowsCount") Integer rowsCount,
                              @PathVariable("minPrice") Float minPrice,
                              @PathVariable("maxPrice") Float maxPrice,
@@ -64,33 +64,33 @@ public class CarControllerImpl extends AbsSuperController implements ICarControl
         if (!"-1".equals(brand) && brand != null)
             cons.put("brand",brand);
         HttpResult httpResult = getBll().findByPage(cons, pageNumber, rowsCount);
-        return new ObjectMapper().writeValueAsString(httpResult);
+        return httpResult;
     }
 
     //新增汽车对象
     @PostMapping("/save_car")
-    public String saveCar(@RequestBody String carStr) throws IOException {
+    public HttpResult saveCar(@RequestBody String carStr) throws IOException {
         Car carObj = new ObjectMapper().readValue(carStr, Car.class);
         carObj.setId(new IdGeneratorSnowflake().snowflakeId());
         getBll().setModel(carObj);
         HttpResult httpResult = getBll().save();
-        return new ObjectMapper().writeValueAsString(httpResult);
+        return httpResult;
     }
 
     //根据id修改汽车信息
     @PutMapping("/edit_car")
-    public String editCar(@RequestBody String carStr) throws IOException {
+    public HttpResult editCar(@RequestBody String carStr) throws IOException {
         Car carObj = new ObjectMapper().readValue(carStr, Car.class);
         getBll().setModel(carObj);
         HttpResult httpResult = getBll().update();
-        return new ObjectMapper().writeValueAsString(httpResult);
+        return httpResult;
     }
 
     //批量删除汽车信息
     @PostMapping("/batch_del_car")
-    public String batchDel(@RequestBody List<Integer> ids) throws IOException {
+    public HttpResult batchDel(@RequestBody List<Integer> ids) throws IOException {
 //        HttpResult httpResult = getBll().batchDel(ids);
-//        return new ObjectMapper().writeValueAsString(httpResult);
+//        return httpResult;
         return null;
     }
 }
