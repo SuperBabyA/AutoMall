@@ -31,7 +31,7 @@ public class User extends AbsSuperObject implements Serializable {
     //联系方式
     private String telephone;
     //出生日期
-    private Date birthday;
+    private String birthday;
     //身份证号
     private Long idCard;
     //是否为管理员

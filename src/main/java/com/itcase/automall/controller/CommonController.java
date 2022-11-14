@@ -50,6 +50,10 @@ public class CommonController {
 
   }
 
+  /*
+  * /download/{filename:.+}
+  * 正则表达式写法，让Rest风格url可以接受’.‘之后的参数
+  * */
   @GetMapping("/download/{filename:.+}")
   public void download(@PathVariable("filename") String name, HttpServletResponse response) {
     log.info("filename: {}", name);

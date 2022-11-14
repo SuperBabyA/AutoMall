@@ -24,7 +24,7 @@ public class Car extends AbsSuperObject implements Serializable {
     //是否在销 0:在售 1:下架
     private Integer selling;
     //上架时间
-    private Date shelvesTime;
+    private String shelvesTime;
 
     //汽车类别外键
     private Long categoryCarId;

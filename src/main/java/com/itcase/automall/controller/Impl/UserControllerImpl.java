@@ -10,17 +10,17 @@ import com.itcase.automall.utils.encryption.MD5Util;
 import com.itcase.automall.utils.mail.MailService;
 import com.itcase.automall.utils.redisUtils.RedisUtil;
 import com.itcase.automall.utils.snowflake.IdGeneratorSnowflake;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
+@Slf4j
 @CrossOrigin
 @RestController
 @RequestMapping("api/user")
@@ -79,11 +79,14 @@ public class UserControllerImpl extends AbsSuperController implements IUserContr
     }
 
     //批量删除用户
-    @PostMapping("/batch_del_user")
-    public HttpResult batchDelUsers(@RequestBody List<Long> ids) throws IOException {
-        System.out.println("@@@"+ids);
-        HttpResult httpResult = getBll().batchDel(ids);
-        return httpResult;
+    @PostMapping("/batch_del_user/{ids}")
+    public HttpResult batchDelUsers(@PathVariable("ids") String ids) throws IOException {
+//        HttpResult httpResult = getBll().batchDel(ids);
+//        return httpResult;
+        List<Long> list = Arrays.stream(ids.split("-")).map(item -> {
+            return Long.parseLong(item);
+        }).collect(Collectors.toList());
+        return getBll().batchDel(list);
     }
 
     //用户登录
@@ -99,21 +102,18 @@ public class UserControllerImpl extends AbsSuperController implements IUserContr
 
     //修改用户信息
     @PutMapping("/edit_user")
-    public HttpResult editUser(@RequestBody String userString) throws IOException {
-        User iUser = new ObjectMapper().readValue(userString, User.class);
-        iUser.setPassword(MD5Util.inputPassToFormPass(iUser.getPassword()));
-        getBll().setModel(iUser);
-        HttpResult httpResult = getBll().update();
-        return httpResult;
+    public HttpResult editUser(@RequestBody User user) throws IOException {
+        user.setPassword(MD5Util.inputPassToFormPass(user.getPassword()));
+        getBll().setModel(user);
+        return getBll().update();
     }
 
     //新用户注册
     @PostMapping("/save_user")
-    public HttpResult addUser(@RequestBody String userString) throws IOException {
-        User iUser = new ObjectMapper().readValue(userString, User.class);
-        iUser.setId(new IdGeneratorSnowflake().snowflakeId());
-        iUser.setPassword(MD5Util.inputPassToFormPass(iUser.getPassword()));
-        getBll().setModel(iUser);
+    public HttpResult addUser(@RequestBody User user) throws IOException {
+        user.setId(new IdGeneratorSnowflake().snowflakeId());
+        user.setPassword(MD5Util.inputPassToFormPass(user.getPassword()));
+        getBll().setModel(user);
         HttpResult httpResult = getBll().save();
         return httpResult;
     }
@@ -139,7 +139,6 @@ public class UserControllerImpl extends AbsSuperController implements IUserContr
     public HttpResult findUser(@PathVariable("id") Long id)  throws IOException {
         user.setId(id);
         getBll().setModel(user);
-        HttpResult httpResult = getBll().findById();
-        return httpResult;
+        return getBll().findById();
     }
 }
