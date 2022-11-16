@@ -1,5 +1,6 @@
 package com.itcase.automall.controller.Impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itcase.automall.bll.Impl.AbsSuperService;
 import com.itcase.automall.bll.Impl.UserServiceImpl;
@@ -44,12 +45,14 @@ public class UserControllerImpl extends AbsSuperController implements IUserContr
         return userService;
     }
 
-    @GetMapping("sendcode/{email}")
-    public HttpResult sendCode(@PathVariable("email") String email) {
+    @GetMapping("sendcode/{email:.+}")
+    public HttpResult sendCode(@PathVariable("email") String email) throws JsonProcessingException {
         int code = (int) ((Math.random() * 9 + 1) * 100000);
         mailService.sendCode(email,"AutoMall 验证码", String.valueOf(code));
         redisUtil.set(email, String.valueOf(code), 5 * 60);
-        return new HttpResult("200", "发送成功", null);
+        return new HttpResult("200", "发送成功", "");
+//        return new ObjectMapper().writeValueAsString(new HttpResult("200", "发送成功", null));
+//        return "success";
     }
 
     @GetMapping("checkcode/{email}/{code}")
