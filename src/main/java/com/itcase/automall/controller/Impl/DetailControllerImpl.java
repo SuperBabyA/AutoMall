@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/detail")
 public class DetailControllerImpl extends AbsSuperController implements IDetailController {

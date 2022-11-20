@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("api/collection")
 public class CollectionControllerImpl extends AbsSuperController implements ICollectionController {
@@ -60,10 +61,9 @@ public class CollectionControllerImpl extends AbsSuperController implements ICol
 
     //新增收藏
     @PostMapping("/save_collection")
-    public HttpResult saveCollection(@RequestBody String collString) throws IOException {
-        Collection coll = new ObjectMapper().readValue(collString, Collection.class);
-        coll.setId(new IdGeneratorSnowflake().snowflakeId());
-        getBll().setModel(coll);
+    public HttpResult saveCollection(@RequestBody Collection collection) throws IOException {
+        collection.setId(new IdGeneratorSnowflake().snowflakeId());
+        getBll().setModel(collection);
         HttpResult httpResult = getBll().save();
         return httpResult;
     }

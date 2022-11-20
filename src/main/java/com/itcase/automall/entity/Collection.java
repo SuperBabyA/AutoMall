@@ -16,7 +16,7 @@ public class Collection extends AbsSuperObject implements Serializable {
     //收藏的唯一标识
     private Long id;
     //收藏时间
-    private Date collectionTime;
+    private String collectionTime;
     //收藏关联用户唯一标识【外键】
     private Long userCollectionId;
     //收藏关联汽车类别唯一标识【外键】

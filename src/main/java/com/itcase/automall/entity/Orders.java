@@ -16,9 +16,9 @@ public class Orders extends AbsSuperObject implements Serializable {
     //订单唯一标识
     private Long id;
     //订单编号
-    private Long orderNumber;
+    private String orderNumber;
     //交易时间
-    private Date tradingHour;
+    private String tradingHour;
     //交易金额
     private Double money;
     //交易状态

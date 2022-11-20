@@ -15,10 +15,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Handler;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -37,22 +39,23 @@ public class UserControllerImpl extends AbsSuperController implements IUserContr
     @Autowired
     private RedisUtil redisUtil ;
 
-    @Autowired
-    private MailService mailService ;
+/*    @Autowired
+    private MailService mailService ;*/
 
     @Override
     public AbsSuperService getBll() {
         return userService;
     }
 
-    @GetMapping("sendcode/{email:.+}")
-    public HttpResult sendCode(@PathVariable("email") String email) throws JsonProcessingException {
-        int code = (int) ((Math.random() * 9 + 1) * 100000);
-        mailService.sendCode(email,"AutoMall 验证码", String.valueOf(code));
-        redisUtil.set(email, String.valueOf(code), 5 * 60);
-        return new HttpResult("200", "发送成功", "");
-//        return new ObjectMapper().writeValueAsString(new HttpResult("200", "发送成功", null));
-//        return "success";
+    @GetMapping( value="sendcode/{email:.+}")
+    public String sendCode(@PathVariable("email") String email) {
+
+        HttpResult httpResult = ((UserServiceImpl) getBll()).sendCode(email);
+        if (httpResult.getCode().equals("200")) {
+            return "200";
+        }else {
+            return "401";
+        }
     }
 
     @GetMapping("checkcode/{email}/{code}")
@@ -60,16 +63,7 @@ public class UserControllerImpl extends AbsSuperController implements IUserContr
             @PathVariable("email") String email,
             @PathVariable("code") String code
     ) {
-        String _code = (String) redisUtil.get(email);
-        if (_code == null || _code == "") {
-            return new HttpResult("401", "验证码错误", null);
-        }
-        if (_code.equals(code)) {
-            redisUtil.del(email);
-            return new HttpResult("200", "验证码正确", null);
-        } else {
-            return new HttpResult("401", "验证码错误", null);
-        }
+        return ((UserServiceImpl) getBll()).checkCode(email, code);
     }
 
     // 用户注销 / 管理员删除用户
@@ -93,12 +87,13 @@ public class UserControllerImpl extends AbsSuperController implements IUserContr
     }
 
     //用户登录
-    @GetMapping("/login_user/{email}/{password}")
-    public HttpResult UserLogin(@PathVariable String email,
-                            @PathVariable String password) throws IOException {
-        Map<String, Object> cons = new HashMap<>();
-        cons.put("email",email);
-        cons.put("password", MD5Util.inputPassToFormPass(password));
+    @PostMapping("/login")
+    public HttpResult UserLogin(@RequestBody HashMap<String, Object> cons) throws IOException {
+        String code = (String) redisUtil.get(cons.get("email").toString());
+        if ( !cons.get("code").toString().equals(code) ) {
+            return new HttpResult("401", "验证码错误", null);
+        }
+        cons.put("password", MD5Util.inputPassToFormPass(cons.get("password").toString()));
         HttpResult httpResult = ((UserServiceImpl)getBll()).findByEmail(cons);
         return httpResult;
     }

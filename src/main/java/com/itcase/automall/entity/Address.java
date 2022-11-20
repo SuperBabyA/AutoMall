@@ -14,6 +14,10 @@ import java.io.Serializable;
 public class Address extends AbsSuperObject implements Serializable {
     //地址唯一标识
     private Long id;
+    // 收件人姓名
+    private String receiveName ;
+    // 收件人联系电话
+    private String receiveTelephone ;
     //所在省
     private String province;
     //所在市

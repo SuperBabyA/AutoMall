@@ -10,6 +10,12 @@
             <if test="id != null">
                 id,
             </if>
+            <if test="receiveName != null">
+                receive_name,
+            </if>
+            <if test="receiveTelephone != null">
+                receive_telephone,
+            </if>
             <if test="province != null">
                 province,
             </if>
@@ -36,6 +42,12 @@
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 #{id},
+            </if>
+            <if test="receiveName != null">
+                #{receiveName},
+            </if>
+            <if test="receiveTelephone != null">
+                #{receiveTelephone},
             </if>
             <if test="province != null">
                 #{province},

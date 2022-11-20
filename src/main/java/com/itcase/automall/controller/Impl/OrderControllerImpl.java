@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 
+@CrossOrigin
 @RestController
 @RequestMapping("api/order")
 public class OrderControllerImpl  extends AbsSuperController implements IOrderController {
@@ -57,11 +58,9 @@ public class OrderControllerImpl  extends AbsSuperController implements IOrderCo
 
     //新增订单
     @PostMapping("/save_order")
-    public HttpResult saveOrder(@RequestBody String orderString) throws IOException {
-        Orders order = new ObjectMapper().readValue(orderString, Orders.class);
+    public HttpResult saveOrder(@RequestBody Orders order) throws IOException {
         order.setId(new IdGeneratorSnowflake().snowflakeId());
-        order.setOrderNumber(new Date().getTime());
-        System.out.println(order);
+        order.setOrderNumber( "AM" + new Date().getTime());
         getBll().setModel(order);
         HttpResult httpResult = getBll().save();
         return httpResult;

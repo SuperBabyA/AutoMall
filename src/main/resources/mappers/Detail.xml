@@ -13,6 +13,9 @@
             <if test="color != null">
                 color,
             </if>
+            <if test="detailImg != null">
+                detail_img,
+            </if>
             <if test="variableSpeed != null">
                 variable_speed,
             </if>
@@ -63,6 +66,9 @@
             </if>
             <if test="variableSpeed != null">
                 #{variableSpeed},
+            </if>
+            <if test="detailImg != null">
+                #{detail_img},
             </if>
             <if test="payload != null">
                 #{payload},
@@ -189,6 +195,7 @@
     <resultMap type="com.itcase.automall.entity.Detail" id="CarAllInfoMap">
         <id column="id" property="id"/>
         <result column="color" property="color"/>
+        <result column="detail_img" property="detailImg" />
         <result column="variable_speed" property="variableSpeed"/>
         <result column="payload" property="payload"/>
         <result column="axle_base" property="axleBase"/>

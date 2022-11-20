@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
+@CrossOrigin
 @RestController
 @RequestMapping("api/address")
 public class AddressControllerImpl extends AbsSuperController implements IAddressController {
@@ -45,11 +46,8 @@ public class AddressControllerImpl extends AbsSuperController implements IAddres
 
     //修改单个用户的地址
     @PutMapping("/modify_addr")
-    public HttpResult modifyUserAddress(@RequestBody String addrString) throws IOException {
-        System.out.println(addrString);
-        Address addr = new ObjectMapper().readValue(addrString, Address.class);
-        System.out.println(addr);
-        getBll().setModel(addr);
+    public HttpResult modifyUserAddress(@RequestBody Address address) throws IOException {
+        getBll().setModel(address);
         HttpResult httpResult = getBll().update();
         return httpResult;
     }
@@ -70,6 +68,15 @@ public class AddressControllerImpl extends AbsSuperController implements IAddres
         address.setId(id);
         getBll().setModel(address);
         HttpResult httpResult = getBll().delete();
+        return httpResult;
+    }
+
+    @GetMapping("/find_by_id/{id}")
+    public HttpResult findById(@PathVariable("id") Long id) {
+        Address address1 = new Address();
+        address1.setId(id);
+        getBll().setModel(address1);
+        HttpResult httpResult = ((AddressServiceImpl) getBll()).findById();
         return httpResult;
     }
 }

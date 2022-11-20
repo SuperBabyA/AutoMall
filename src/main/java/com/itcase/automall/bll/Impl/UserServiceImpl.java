@@ -6,12 +6,17 @@ import com.itcase.automall.entity.AbsSuperObject;
 import com.itcase.automall.entity.User;
 import com.itcase.automall.utils.HttpResult;
 import com.itcase.automall.utils.encryption.MD5Util;
+import com.itcase.automall.utils.mail.MailService;
+import com.itcase.automall.utils.redisUtils.RedisUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class UserServiceImpl extends AbsSuperService implements IUserService {
 
@@ -28,6 +33,12 @@ public class UserServiceImpl extends AbsSuperService implements IUserService {
 
     @Autowired
     private IUserDao iUserDao;
+
+    @Autowired
+    private MailService mailService ;
+
+    @Autowired
+    private RedisUtil redisUtil ;
 
     @Override
     public IUserDao getDao() {
@@ -68,5 +79,39 @@ public class UserServiceImpl extends AbsSuperService implements IUserService {
             httpResult.setData(user);
         }
         return httpResult;
+    }
+
+    public HttpResult sendCode(String email) {
+        int code = (int) ((Math.random() * 9 + 1) * 100000);
+        mailService.sendCode(email,"AutoMall 验证码", String.valueOf(code));
+        redisUtil.set(email, String.valueOf(code), 5 * 60);
+
+        log.info("------========{}", email);
+        HttpResult httpResult = new HttpResult();
+        httpResult.setCode("200");
+        httpResult.setMessage("发送成功");
+//        httpResult.setData(new ArrayList<String>().add("success"));
+        httpResult.setData("success");
+        return httpResult;
+    }
+
+    public HttpResult checkCode(String email, String code) {
+        String _code = (String) redisUtil.get(email);
+        HttpResult httpResult = new HttpResult();
+        if (_code == null || _code == "") {
+            httpResult.setCode("401");
+            httpResult.setMessage("验证码错误");
+            return httpResult;
+        }
+        if (_code.equals(code)) {
+            redisUtil.del(email);
+            httpResult.setCode("401");
+            httpResult.setMessage("验证码错误");
+            return httpResult;
+        } else {
+            httpResult.setCode("401");
+            httpResult.setMessage("验证码错误");
+            return httpResult;
+        }
     }
 }

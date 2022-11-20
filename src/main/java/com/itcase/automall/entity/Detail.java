@@ -16,6 +16,8 @@ public class Detail extends AbsSuperObject implements Serializable {
     private Long id;
     //汽车外观色
     private String color;
+    //汽车外观图
+    private String detailImg;
     //挡的类型
     private String variableSpeed;
     //汽车座位数
