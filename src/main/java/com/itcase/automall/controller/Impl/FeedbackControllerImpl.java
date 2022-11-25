@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("api/feedback")
 public class FeedbackControllerImpl extends AbsSuperController implements IFeedbackController {
@@ -54,11 +55,9 @@ public class FeedbackControllerImpl extends AbsSuperController implements IFeedb
 
     //新增反馈对象
     @PostMapping("/save_feedback")
-    public HttpResult saveFeedback(@RequestBody String fbString) throws IOException {
-        Feedback fb = new ObjectMapper().readValue(fbString, Feedback.class);
-        fb.setId(new IdGeneratorSnowflake().snowflakeId());
-        System.out.println(fb);
-        getBll().setModel(fb);
+    public HttpResult saveFeedback(@RequestBody Feedback feedback) throws IOException {
+        feedback.setId(new IdGeneratorSnowflake().snowflakeId());
+        getBll().setModel(feedback);
         HttpResult httpResult = getBll().save();
         return httpResult;
     }

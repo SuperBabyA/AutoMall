@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+@CrossOrigin
 @RestController
 @RequestMapping("api/reservation")
 public class ReservationController extends AbsSuperController implements IReservationController {
@@ -33,10 +34,9 @@ public class ReservationController extends AbsSuperController implements IReserv
 
     //保存预约
     @PostMapping("/save_reservation")
-    public HttpResult saveReservation(@RequestBody String resString) throws IOException{
-        Reservation res = new ObjectMapper().readValue(resString, Reservation.class);
-        res.setId(new IdGeneratorSnowflake().snowflakeId());
-        getBll().setModel(res);
+    public HttpResult saveReservation(@RequestBody Reservation reservation) throws IOException{
+        reservation.setId(new IdGeneratorSnowflake().snowflakeId());
+        getBll().setModel(reservation);
         HttpResult httpResult = getBll().save();
         return httpResult;
     }

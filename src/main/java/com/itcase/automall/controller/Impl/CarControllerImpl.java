@@ -109,4 +109,9 @@ public class CarControllerImpl extends AbsSuperController implements ICarControl
         }).collect(Collectors.toList());
         return getBll().batchDel(list);
     }
+
+    @GetMapping("/getAll")
+    public HttpResult getAll() {
+        return getBll().findAll();
+    }
 }

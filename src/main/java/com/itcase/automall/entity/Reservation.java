@@ -30,7 +30,7 @@ public class Reservation extends AbsSuperObject implements Serializable {
     private String reservationModel;
 
     //预约时间
-    private Date reservationTime;
+    private String reservationTime;
 
     //是否处理
     private String dispose;
