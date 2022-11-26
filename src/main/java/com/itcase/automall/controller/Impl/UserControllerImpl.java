@@ -48,14 +48,11 @@ public class UserControllerImpl extends AbsSuperController implements IUserContr
     }
 
     @GetMapping( value="sendcode/{email:.+}")
-    public String sendCode(@PathVariable("email") String email) {
+    public HttpResult sendCode(@PathVariable("email") String email) {
 
         HttpResult httpResult = ((UserServiceImpl) getBll()).sendCode(email);
-        if (httpResult.getCode().equals("200")) {
-            return "200";
-        }else {
-            return "401";
-        }
+
+        return httpResult;
     }
 
     @GetMapping("checkcode/{email}/{code}")
